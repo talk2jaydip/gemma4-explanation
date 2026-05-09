@@ -14,139 +14,19 @@
     <a href="index.html">Home</a>
     <a href="article.html">Read</a>
     <a href="notebook.html">Notebook</a>
-    <a href="assets.html" class="active">Assets</a>
     <a href="about.html">About</a>
   </nav>
 </header>
 
 <main>
   <section class="sheet">
-    <span class="kicker">Reusable diagrams</span>
-    <h1>15 handwritten diagrams</h1>
-    <p class="lede">Every figure from the article is available as a standalone SVG. Drop them into slides, docs, blogs, or internal wikis. Animation survives in SVG; PNGs are provided for platforms that strip interactivity.</p>
-  </section>
-
-  <section class="sheet">
-    <h2>Architecture overview</h2>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/architecture_overview.svg"></object>
-        <h3>One-screen mental model</h3>
-        <a href="gemma4_assets_v2/architecture_overview.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/architecture_overview.png" download>PNG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/tokenization_flow.svg"></object>
-        <h3>Tokenization flow (262K vocab)</h3>
-        <a href="gemma4_assets_v2/tokenization_flow.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/decoder_block.svg"></object>
-        <h3>Decoder block</h3>
-        <a href="gemma4_assets_v2/decoder_block.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/decoder_block.png" download>PNG</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="sheet">
-    <h2>Attention</h2>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/hybrid_attention.svg"></object>
-        <h3>Hybrid (local + global)</h3>
-        <a href="gemma4_assets_v2/hybrid_attention.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/hybrid_attention.png" download>PNG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/gqa_heads.svg"></object>
-        <h3>Grouped-Query Attention</h3>
-        <a href="gemma4_assets_v2/gqa_heads.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/layer_pattern_strip.svg"></object>
-        <h3>60-layer pattern (5:1)</h3>
-        <a href="gemma4_assets_v2/layer_pattern_strip.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/kv_cache_math.svg"></object>
-        <h3>KV cache math</h3>
-        <a href="gemma4_assets_v2/kv_cache_math.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/kv_cache_math.png" download>PNG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/rope_rotation.svg"></object>
-        <h3>RoPE / p-RoPE</h3>
-        <a href="gemma4_assets_v2/rope_rotation.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/rope_rotation.png" download>PNG</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="sheet">
-    <h2>Modalities and MoE</h2>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/vision_token_budget.svg"></object>
-        <h3>Vision token budget</h3>
-        <a href="gemma4_assets_v2/vision_token_budget.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/vision_token_budget.png" download>PNG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/audio_encoder.svg"></object>
-        <h3>Audio encoder (E2B/E4B)</h3>
-        <a href="gemma4_assets_v2/audio_encoder.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/moe_router.svg"></object>
-        <h3>MoE router (26B A4B)</h3>
-        <a href="gemma4_assets_v2/moe_router.svg" download>SVG</a> -
-        <a href="gemma4_assets_v2/png/moe_router.png" download>PNG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/ple_detail.svg"></object>
-        <h3>PLE detail</h3>
-        <a href="gemma4_assets_v2/ple_detail.svg" download>SVG</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="sheet">
-    <h2>Deployment &amp; serving</h2>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/quantization_memory.svg"></object>
-        <h3>Quantization memory</h3>
-        <a href="gemma4_assets_v2/quantization_memory.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/inference_pipeline.svg"></object>
-        <h3>Prefill vs decode</h3>
-        <a href="gemma4_assets_v2/inference_pipeline.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/function_calling_loop.svg"></object>
-        <h3>Function calling loop</h3>
-        <a href="gemma4_assets_v2/function_calling_loop.svg" download>SVG</a>
-      </div>
-      <div class="asset-card">
-        <object type="image/svg+xml" data="gemma4_assets_v2/decision_tree.svg"></object>
-        <h3>Model decision tree</h3>
-        <a href="gemma4_assets_v2/decision_tree.svg" download>SVG</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="sheet">
-    <h2>Bulk download</h2>
-    <p>Grab the full asset folder or the whole package.</p>
+    <span class="kicker">Assets</span>
+    <h1>Assets page removed</h1>
+    <p class="lede">This site is configured as a clean reading experience, so public asset downloads are not linked.</p>
     <div class="nav-grid">
-      <a class="nav-card" href="downloads/">
-        <strong>Downloads folder</strong>Notebook, SVGs, PNGs.
-      </a>
-      <a class="nav-card" href="article.html">
-        <strong>Read the article</strong>See each diagram in context.
-      </a>
+      <a class="nav-card" href="article.html"><strong>Read the article</strong>See the diagrams in context.</a>
+      <a class="nav-card" href="notebook.html"><strong>Notebook companion</strong>Notebook render in-browser.</a>
+      <a class="nav-card" href="about.html"><strong>About</strong>Sources + author links.</a>
     </div>
   </section>
 </main>
