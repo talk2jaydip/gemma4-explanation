@@ -1,0 +1,36 @@
+:root{--ink:#151515;--paper:#fffaf0;--grid:#eadfc8;--blue:#e2f1ff;--green:#e8f5dd;--pink:#fbf0f9;--tan:#f8e7c9;--yellow:#fff7c9;--shadow:#d4c7ad;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:ui-rounded,"Avenir Next",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(90deg,rgba(234,223,200,.55) 1px,transparent 1px),linear-gradient(rgba(234,223,200,.55) 1px,transparent 1px),#fff8e7;background-size:28px 28px;line-height:1.65;}
+article,main{max-width:1040px;margin:0 auto;padding:30px 18px 90px}
+.sheet{background:rgba(255,250,240,.93);border:3px solid var(--ink);border-radius:28px;box-shadow:10px 10px 0 var(--shadow);padding:36px;margin:30px 0;position:relative;overflow:hidden}
+.sheet:before{content:"";position:absolute;left:-30px;right:-30px;top:-30px;height:70px;background:repeating-linear-gradient(-8deg,rgba(255,255,255,.65) 0 20px,rgba(248,231,201,.8) 20px 40px);transform:rotate(-1deg);opacity:.45;pointer-events:none}
+.kicker{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;background:var(--yellow);display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:5px 12px;box-shadow:3px 3px 0 var(--shadow)}
+h1{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive;font-size:clamp(2.3rem,6vw,5.4rem);line-height:.94;margin:22px 0 18px;letter-spacing:-.055em}
+h2{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive;font-size:clamp(1.9rem,4vw,3rem);line-height:1.04;margin:18px 0 12px;letter-spacing:-.035em}
+h3{font-size:1.25rem;margin:24px 0 8px}
+.lede{font-size:1.24rem;max-width:800px}
+.note-card{border:2.5px solid var(--ink);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--shadow);padding:18px;margin:20px 0}
+.sticky{background:var(--yellow);transform:rotate(-.6deg)}
+.small{font-size:.92rem}
+.muted{opacity:.78}
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:22px}
+.nav-card{text-decoration:none;color:var(--ink);border:2.5px solid var(--ink);border-radius:18px;background:#fff;padding:18px;box-shadow:5px 5px 0 var(--shadow);display:block;transition:transform .1s,box-shadow .1s}
+.nav-card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--shadow)}
+.nav-card strong{font-size:1.15rem;display:block;margin-bottom:6px}
+.nav-card .pill{display:inline-block;border:2px solid var(--ink);border-radius:999px;background:var(--tan);padding:2px 8px;margin:6px 4px 0 0;font-size:.75rem;font-weight:800}
+.pill{display:inline-block;border:2px solid var(--ink);border-radius:999px;background:var(--tan);padding:2px 8px;margin:2px;font-size:.8rem;font-weight:800}
+.callout{border-left:8px solid var(--ink);background:#fff;padding:18px 20px;border-radius:16px;margin:18px 0}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#151515;color:#fffbe9;border-radius:18px;padding:18px;white-space:pre-wrap;overflow:auto;border:3px solid #151515;box-shadow:5px 5px 0 var(--shadow);line-height:1.55}
+.tag{display:inline-block;background:var(--green);border:2px solid var(--ink);border-radius:999px;padding:3px 10px;font-size:.8rem;font-weight:800;margin:2px;box-shadow:2px 2px 0 var(--shadow)}
+header.sitehead{max-width:1040px;margin:0 auto;padding:22px 18px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+header.sitehead a{text-decoration:none;color:var(--ink);font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:6px 12px;background:#fff;box-shadow:3px 3px 0 var(--shadow)}
+header.sitehead a.active{background:var(--tan)}
+header.sitehead .brand{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive;font-size:1.6rem}
+footer.sitefoot{max-width:1040px;margin:40px auto 30px;padding:14px 18px;border-top:2px dashed var(--ink);text-align:center;font-size:.9rem;opacity:.75}
+.asset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.asset-card{background:#fff;border:2.5px solid var(--ink);border-radius:18px;padding:14px;box-shadow:5px 5px 0 var(--shadow)}
+.asset-card img,.asset-card object{width:100%;height:auto;border-radius:12px;background:var(--paper)}
+.asset-card h3{margin:8px 0 6px}
+.asset-card a{font-weight:800;color:var(--ink);text-decoration:underline}
+@media (max-width:760px){.sheet{padding:24px 16px}h1{font-size:2.6rem}}

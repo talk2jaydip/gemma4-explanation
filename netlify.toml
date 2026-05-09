@@ -1,0 +1,41 @@
+# Publish the static site at /site from repo root (GitHub → Netlify: no base directory needed).
+[build]
+  publish = "site"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "interest-cohort=()"
+
+[[headers]]
+  for = "/gemma4_assets_v2/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/downloads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[redirects]]
+  from = "/read"
+  to = "/article.html"
+  status = 301
+
+[[redirects]]
+  from = "/nb"
+  to = "/notebook.html"
+  status = 301
+
+[[redirects]]
+  from = "/diagrams"
+  to = "/assets.html"
+  status = 301
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Gemma 4 vision token budget calculation from patches to pooled tokens.">
+  <defs><marker id="arrow3" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="22" y="22" width="1076" height="516" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Vision tokens: the 280-token worked example</text>
+  <text x="58" y="101" class="note">Default soft-token budget = 280. Before pooling, that is 280 * 9 = 2,520 image patches.</text>
+
+  <g transform="translate(75 160)">
+    <rect width="300" height="210" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="3"/>
+    <path d="M0 35 H300 M0 70 H300 M0 105 H300 M0 140 H300 M0 175 H300 M50 0 V210 M100 0 V210 M150 0 V210 M200 0 V210 M250 0 V210" stroke="#151515" stroke-width="1.2" opacity="0.45"/>
+    <text x="38" y="242" class="label">960 x 672 image</text>
+    <text x="36" y="268" class="tiny">60 x 42 patches, each 16px</text>
+  </g>
+
+  <path class="flow" d="M395 260 C450 260 460 260 510 260" marker-end="url(#arrow3)"/>
+
+  <g transform="translate(520 150)">
+    <rect width="210" height="230" rx="14" fill="#fff" stroke="#151515" stroke-width="3"/>
+    <text x="22" y="44" class="label">3 x 3 average pool</text>
+    <g transform="translate(46 72)">
+      <rect width="108" height="108" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <path d="M36 0 V108 M72 0 V108 M0 36 H108 M0 72 H108" stroke="#151515" stroke-width="2"/>
+      <circle class="pulse-dot" cx="54" cy="54" r="12" fill="#151515"/>
+    </g>
+    <text x="30" y="210" class="tiny">9 patches collapse</text>
+    <text x="30" y="230" class="tiny">into 1 soft token</text>
+  </g>
+
+  <path class="flow" d="M750 260 C800 260 813 260 860 260" marker-end="url(#arrow3)"/>
+
+  <g transform="translate(870 160)">
+    <rect width="190" height="210" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="3"/>
+    <path d="M0 15 H190 M0 30 H190 M0 45 H190 M0 60 H190 M0 75 H190 M0 90 H190 M0 105 H190 M0 120 H190 M0 135 H190 M0 150 H190 M0 165 H190 M0 180 H190 M0 195 H190 M13 0 V210 M26 0 V210 M39 0 V210 M52 0 V210 M65 0 V210 M78 0 V210 M91 0 V210 M104 0 V210 M117 0 V210 M130 0 V210 M143 0 V210 M156 0 V210 M169 0 V210 M182 0 V210" stroke="#151515" stroke-width="0.8" opacity="0.45"/>
+    <text x="28" y="242" class="label">20 x 14 = 280</text>
+    <text x="17" y="268" class="tiny">soft tokens enter decoder</text>
+  </g>
+
+  <g transform="translate(82 430)">
+    <rect width="955" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">60*42=2520 patches; 2520/9=280 tokens; 960*672=645120 pixels.</text>
+  </g>
+</svg>

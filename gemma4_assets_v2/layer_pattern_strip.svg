@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 400" role="img" aria-label="Gemma 4 31B 60-layer attention pattern: 5 sliding local layers followed by 1 full global layer, last layer global.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .local{fill:#e2f1ff;stroke:#151515;stroke-width:1.8}
+    .global{fill:#fbf0f9;stroke:#151515;stroke-width:2.4}
+    .tick{stroke:#151515;stroke-width:1.4;stroke-dasharray:3 3}
+    .blink{animation:blink 2.4s ease-in-out infinite}
+    @keyframes blink{0%,100%{fill:#fbf0f9}50%{fill:#f3d4ee}}
+  </style>
+  <rect x="24" y="24" width="1072" height="352" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">The 60-layer rhythm: five local, one global (Gemma 4 31B public config)</text>
+  <text x="58" y="96" class="tiny">Blue = sliding local layer. Pink = full global layer. Last layer is always global. Pattern: 5 local + 1 global, repeating.</text>
+
+  <g transform="translate(60 160)">
+    <g id="layers"></g>
+  </g>
+
+  <script type="application/ecmascript"><![CDATA[]]></script>
+
+  <g transform="translate(60 160)">
+    <rect class="local" x="0" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="16" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="32" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="48" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="64" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="80" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="104" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="120" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="136" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="152" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="168" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="184" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="208" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="224" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="240" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="256" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="272" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="288" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="312" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="328" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="344" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="360" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="376" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="392" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="416" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="432" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="448" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="464" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="480" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="496" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="520" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="536" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="552" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="568" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="584" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="600" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="624" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="640" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="656" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="672" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="688" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="704" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="728" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="744" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="760" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="776" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="792" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="808" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="832" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="848" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="864" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="880" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="896" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="912" y="0" width="16" height="60" rx="3"/>
+
+    <text x="0" y="-10" class="tiny">layer 1</text>
+    <text x="905" y="-10" class="tiny">layer 60 (global)</text>
+  </g>
+
+  <g transform="translate(60 260)">
+    <rect width="1000" height="95" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="mono">50 sliding layers + 10 global layers = 60 total.</text>
+    <text x="22" y="62" class="mono">Global layers cost full-attention KV; sliding layers keep a rolling 1024-token window.</text>
+    <text x="22" y="86" class="mono">Final layer is global so the last decision sees the full context.</text>
+  </g>
+</svg>

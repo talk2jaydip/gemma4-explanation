@@ -1,0 +1,1314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma 4 Architecture, Drawn Out - Handwritten Guide</title>
+<meta name="description" content="A source-backed, visual, Substack-style guide to Gemma 4 architecture: hybrid attention, PLE, MoE, vision tokens, RoPE, KV cache math, and practical model choice.">
+
+<style>
+:root{--ink:#151515;--paper:#fffaf0;--grid:#eadfc8;--blue:#e2f1ff;--green:#e8f5dd;--pink:#fbf0f9;--tan:#f8e7c9;--yellow:#fff7c9;--shadow:#d4c7ad;}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;color:var(--ink);font-family:ui-rounded,"Avenir Next",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(90deg,rgba(234,223,200,.55) 1px,transparent 1px),linear-gradient(rgba(234,223,200,.55) 1px,transparent 1px),#fff8e7;background-size:28px 28px;line-height:1.65;}
+article{max-width:1040px;margin:0 auto;padding:30px 18px 90px}.sheet{background:rgba(255,250,240,.93);border:3px solid var(--ink);border-radius:28px;box-shadow:10px 10px 0 var(--shadow);padding:36px;margin:30px 0;position:relative;overflow:hidden}.sheet:before{content:"";position:absolute;left:-30px;right:-30px;top:-30px;height:70px;background:repeating-linear-gradient(-8deg,rgba(255,255,255,.65) 0 20px,rgba(248,231,201,.8) 20px 40px);transform:rotate(-1deg);opacity:.45;pointer-events:none}.kicker{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;background:var(--yellow);display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:5px 12px;box-shadow:3px 3px 0 var(--shadow)}h1{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive;font-size:clamp(2.3rem,6vw,5.4rem);line-height:.94;margin:22px 0 18px;letter-spacing:-.055em}h2{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive;font-size:clamp(1.9rem,4vw,3rem);line-height:1.04;margin:18px 0 12px;letter-spacing:-.035em}h3{font-size:1.25rem;margin:24px 0 8px}.lede{font-size:1.24rem;max-width:800px}.note-card{border:2.5px solid var(--ink);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--shadow);padding:18px;margin:20px 0}.sticky{background:var(--yellow);transform:rotate(-.6deg)}.small{font-size:.92rem}.muted{opacity:.78}.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-top:22px}.toc a{text-decoration:none;color:var(--ink);border:2px solid var(--ink);border-radius:16px;background:#fff;padding:12px 14px;box-shadow:3px 3px 0 var(--shadow);font-weight:800}.toc a:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--shadow)}.model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.model-card{background:#fff;border:2.4px solid var(--ink);border-radius:18px;padding:16px;box-shadow:5px 5px 0 var(--shadow)}.model-card strong{font-size:1.2rem}.pill{display:inline-block;border:2px solid var(--ink);border-radius:999px;background:var(--tan);padding:2px 8px;margin:2px;font-size:.8rem;font-weight:800}.calc{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#151515;color:#fffbe9;border-radius:18px;padding:18px;white-space:pre-wrap;overflow:auto;border:3px solid #151515;box-shadow:5px 5px 0 var(--shadow);line-height:1.55}.callout{border-left:8px solid var(--ink);background:#fff;padding:18px 20px;border-radius:16px;margin:18px 0}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.mini{background:#fff;border:2px solid var(--ink);border-radius:16px;padding:14px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#fff;border:2px dashed var(--ink);border-radius:16px;padding:14px;overflow:auto}.diagram-wrap{margin:24px 0}.diagram-wrap svg{width:100%;height:auto;display:block}.scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}.title{font-size:31px;font-weight:900;letter-spacing:-.03em}.label{font:700 22px ui-rounded,"Avenir Next",system-ui,sans-serif}.tiny,.note{font:500 17px ui-rounded,"Avenir Next",system-ui,sans-serif}.mono{font:700 18px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.flow{fill:none;stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:10 8;animation:dash 3s linear infinite}.tokens circle{fill:#fff;stroke:var(--ink);stroke-width:3}.arc{fill:none;stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:11 9;animation:dash 4.4s linear infinite}.a2{animation-delay:.7s}.a3{animation-delay:1.2s}.pulse-dot{animation:pulse 1.5s ease-in-out infinite;transform-origin:center}.expert{fill:#fff;stroke:var(--ink);stroke-width:2.2}.expert.active{fill:#f8e7c9;animation:pulse 1.8s ease-in-out infinite}.bar{transform-origin:left center}.grow-wide{animation:growWide 2s ease-out both}.grow-short{animation:growShort 2s ease-out both}.rotvec{animation:wiggle 2.8s ease-in-out infinite;transform-origin:0 0}.traveller{opacity:.95}.traveller.light{stroke:var(--ink);stroke-width:2}@keyframes dash{to{stroke-dashoffset:-120}}@keyframes pulse{0%,100%{opacity:.45;transform:scale(.92)}50%{opacity:1;transform:scale(1.07)}}@keyframes growWide{from{transform:scaleX(.04)}to{transform:scaleX(1)}}@keyframes growShort{from{transform:scaleX(.04)}to{transform:scaleX(1)}}@keyframes wiggle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-6deg)}}table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:2.5px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:5px 5px 0 var(--shadow);margin:18px 0}th,td{padding:12px 14px;border-bottom:1.8px solid var(--ink);vertical-align:top}th{background:var(--tan);text-align:left}tr:last-child td{border-bottom:0}sup a{text-decoration:none;color:var(--ink);font-weight:900}.source-list li{margin:9px 0}.source-list a{color:var(--ink);font-weight:700}.caption{font-size:.9rem;opacity:.75;margin-top:6px}.end{font-size:.94rem}.soft{background:var(--green)}.blue{background:var(--blue)}.pink{background:var(--pink)}.tan{background:var(--tan)}@media (max-width:760px){.two-col,.three-col{grid-template-columns:1fr}.sheet{padding:24px 16px}h1{font-size:2.6rem}.title{font-size:24px}.label{font-size:18px}.tiny,.note,.mono{font-size:13px}.calc{font-size:.86rem}}
+</style>
+
+</head>
+<body>
+
+
+<article>
+  <section class="sheet">
+    <span class="kicker">Handwritten architecture guide</span>
+    <h1>Gemma 4, drawn out</h1>
+    <p class="lede">Most model announcements hand you a table and a handful of benchmark numbers. That is useful, but it does not explain the machine. This guide treats Gemma 4 like a system on a whiteboard: where the tokens enter, how image patches become soft tokens, why the context window does not explode immediately, and what "26B A4B" actually means when a single token is being processed.</p>
+    <p class="lede"><strong>The short version:</strong> Gemma 4 is a family, not one model. The small dense models are tuned for devices and include audio; the larger models push long-context text-plus-vision reasoning; the 26B A4B model is the sparse MoE member, where only about 3.8B parameters are active per token.</p>
+    <div class="toc">
+      <a href="#family">1. Model family</a>
+      <a href="#flow">2. Full data flow</a>
+      <a href="#token">3. Tokenizer &amp; vocab</a>
+      <a href="#block">4. Decoder block</a>
+      <a href="#attention">5. Hybrid attention</a>
+      <a href="#gqa">6. GQA heads</a>
+      <a href="#pattern">7. 60-layer pattern</a>
+      <a href="#kv">8. KV cache math</a>
+      <a href="#rope">9. RoPE / p-RoPE</a>
+      <a href="#vision">10. Vision tokens</a>
+      <a href="#audio">11. Audio path</a>
+      <a href="#moe">12. MoE routing</a>
+      <a href="#ple">13. PLE detail</a>
+      <a href="#quant">14. Quantization</a>
+      <a href="#infer">15. Prefill vs decode</a>
+      <a href="#tools">16. Function calling</a>
+      <a href="#use">17. Which model to use</a>
+    </div>
+  </section>
+
+  <section class="diagram-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Gemma 4 architecture overview: text, vision and audio tokens enter encoders, merge into a decoder stack, and produce text or tool calls.">
+  <defs>
+    <filter id="paperShadow" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="4" dy="5" stdDeviation="0" flood-color="#d4c7ad" flood-opacity="0.95"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#151515"/>
+    </marker>
+  </defs>
+  <rect x="20" y="20" width="1080" height="520" rx="28" fill="#fffaf0" stroke="#151515" stroke-width="3" filter="url(#paperShadow)"/>
+  <text x="56" y="64" class="scribble title">One screen mental model</text>
+  <text x="56" y="92" class="note">Everything becomes a token-like vector, then the decoder keeps rewriting the sequence.</text>
+
+  <g class="card" transform="translate(60 135)">
+    <rect width="180" height="82" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">text prompt</text>
+    <text x="22" y="58" class="tiny">262K vocab ids</text>
+  </g>
+  <g class="card" transform="translate(60 260)">
+    <rect width="180" height="82" rx="16" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">image</text>
+    <text x="22" y="58" class="tiny">variable token budget</text>
+  </g>
+  <g class="card" transform="translate(60 385)">
+    <rect width="180" height="82" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">audio</text>
+    <text x="22" y="58" class="tiny">E2B/E4B only</text>
+  </g>
+
+  <g class="card" transform="translate(330 130)">
+    <rect width="225" height="95" rx="18" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">token embedding</text>
+    <text x="22" y="58" class="tiny">scaled lookup</text>
+    <text x="22" y="77" class="tiny">+ PLE on edge models</text>
+  </g>
+  <g class="card" transform="translate(330 275)">
+    <rect width="225" height="105" rx="18" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">vision encoder</text>
+    <text x="22" y="58" class="tiny">16px patches</text>
+    <text x="22" y="78" class="tiny">3x3 pooling</text>
+  </g>
+
+  <g class="stack" transform="translate(650 105)">
+    <rect x="0" y="250" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="190" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="130" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="70" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="10" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <text x="20" y="45" class="label">RMSNorm</text>
+    <text x="128" y="45" class="label">attention</text>
+    <text x="20" y="105" class="label">local window</text>
+    <text x="20" y="165" class="label">full/global layer</text>
+    <text x="20" y="225" class="label">MLP or MoE</text>
+    <text x="20" y="287" class="label">residual stream</text>
+    <text x="20" y="350" class="scribble small">repeat 30 to 60 layers</text>
+  </g>
+
+  <g class="card" transform="translate(970 210)">
+    <rect width="100" height="95" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="19" y="34" class="label">logits</text>
+    <text x="18" y="62" class="tiny">next token</text>
+    <text x="18" y="80" class="tiny">or tool call</text>
+  </g>
+
+  <path class="flow" d="M240 176 C285 176 295 176 330 176" marker-end="url(#arrow)"/>
+  <path class="flow" d="M240 301 C292 303 300 324 330 324" marker-end="url(#arrow)"/>
+  <path class="flow" d="M240 426 C286 422 294 347 330 340" marker-end="url(#arrow)"/>
+  <path class="flow" d="M555 175 C602 175 607 166 650 166" marker-end="url(#arrow)"/>
+  <path class="flow" d="M555 327 C612 314 617 280 650 258" marker-end="url(#arrow)"/>
+  <path class="flow" d="M920 257 C945 257 952 257 970 257" marker-end="url(#arrow)"/>
+
+  <circle class="traveller" r="8" fill="#151515">
+    <animateMotion dur="7s" repeatCount="indefinite" path="M240 176 C285 176 295 176 330 176 C410 176 510 176 555 175 C602 175 607 166 650 166 C785 166 855 218 920 257 C945 257 952 257 970 257"/>
+  </circle>
+  <circle class="traveller light" r="7" fill="#f8e7c9">
+    <animateMotion dur="8.5s" begin="1s" repeatCount="indefinite" path="M240 301 C292 303 300 324 330 324 C420 324 520 327 555 327 C612 314 617 280 650 258 C800 250 870 252 970 257"/>
+  </circle>
+</svg></section>
+
+  <section class="sheet" id="family">
+    <h2>The Gemma 4 family, without the fog</h2>
+    <p>Gemma 4 ships as four public sizes: <strong>E2B</strong>, <strong>E4B</strong>, <strong>26B A4B</strong>, and <strong>31B</strong>. Google describes the family as multimodal, with text and image input for all models, audio support on the smaller E2B and E4B models, and text output. The official card also names dense and MoE variants, context windows up to 256K tokens, a 262K-token vocabulary, and native system-role plus function-calling support.<sup><a href="#s1">1</a></sup></p>
+    <div class="model-grid">
+      <div class="model-card tan"><strong>Gemma 4 E2B</strong><br><span class="pill">dense</span><span class="pill">35 layers</span><span class="pill">128K ctx</span><p>2.3B effective parameters, 5.1B including embeddings. Designed for edge and mobile-style deployments. Text, image, and audio input.</p></div>
+      <div class="model-card blue"><strong>Gemma 4 E4B</strong><br><span class="pill">dense</span><span class="pill">42 layers</span><span class="pill">128K ctx</span><p>4.5B effective parameters, 8B including embeddings. A stronger on-device model with the same text-image-audio input profile.</p></div>
+      <div class="model-card pink"><strong>Gemma 4 26B A4B</strong><br><span class="pill">MoE</span><span class="pill">30 layers</span><span class="pill">256K ctx</span><p>25.2B total parameters, 3.8B active parameters. The router selects 8 active experts out of 128 plus a shared expert.</p></div>
+      <div class="model-card soft"><strong>Gemma 4 31B</strong><br><span class="pill">dense</span><span class="pill">60 layers</span><span class="pill">256K ctx</span><p>30.7B dense parameters. The big all-parameters-active model for high quality local or workstation-class use.</p></div>
+    </div>
+    <p class="small muted">Memory note: Google's overview lists approximate inference weight memory at BF16/SFP8/Q4. For example, Q4 estimates are 3.2 GB for E2B, 5 GB for E4B, 15.6 GB for 26B A4B, and 17.4 GB for 31B. Those are weight-memory estimates, not the whole runtime footprint with KV cache, batching, or framework overhead.<sup><a href="#s2">2</a></sup></p>
+  </section>
+
+  <section class="sheet" id="flow">
+    <h2>A token enters the machine</h2>
+    <p>Gemma 4 is easiest to understand as a <strong>decoder-first multimodal transformer</strong>. Text tokens are looked up in an embedding table. Images are converted into soft visual tokens by a vision encoder. Audio, only on E2B and E4B, is converted into audio token embeddings before it joins the sequence. Then the combined sequence goes through decoder layers that repeatedly answer one question: "Given everything so far, how should this position be rewritten?"</p>
+    <div class="callout sticky"><strong>Key mental picture:</strong> the model is not reading pixels and words in separate universes. After the encoders, it sees a single sequence of vectors with special image/audio/text positions. The decoder is where the modalities actually meet.</div>
+    <table>
+      <tr><th>Stage</th><th>What happens</th><th>Why it matters</th></tr>
+      <tr><td>Tokenizer</td><td>Text becomes integer IDs from a 262K vocabulary.</td><td>A larger vocabulary can carry many scripts, code fragments, and special control tokens.</td></tr>
+      <tr><td>Embedding</td><td>IDs become dense vectors. E2B/E4B add per-layer embedding signals.</td><td>The sequence now has a numerical surface that attention can compare.</td></tr>
+      <tr><td>Vision encoder</td><td>Images keep aspect ratio under a token budget, then become pooled soft tokens.</td><td>Low budgets run faster; high budgets preserve tiny details.</td></tr>
+      <tr><td>Decoder stack</td><td>Layers alternate cheap local reading with periodic full-context reading.</td><td>This is the long-context trick: do not make every layer pay full 256K cost.</td></tr>
+      <tr><td>LM head</td><td>The final hidden vector is turned into logits over the next token.</td><td>That next token may be normal text or a structured tool-call fragment.</td></tr>
+    </table>
+  </section>
+
+  <section class="sheet" id="token">
+    <h2>Step 3 - Tokenizer and vocabulary: the 262K-door</h2>
+    <p>Before any attention happens, text has to become integers. Gemma 4 uses a 262,144-token SentencePiece vocabulary.<sup><a href="#s1">1</a></sup> That is huge by older standards: GPT-2 was 50,257; Llama 2 was 32,000. Bigger vocab means fewer tokens per string, which means longer effective context for the same 256K budget and less fragmentation on non-Latin scripts and code.</p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Tokenization flow into Gemma 4: text becomes ids from a 262K vocabulary, then dense embeddings, then decoder input.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 19px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes fadein{0%{opacity:0}100%{opacity:1}}
+    .tok{animation:fadein .8s ease-out both}
+  </style>
+  <defs><marker id="ta" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">From string to vector: the 262K-vocab door</text>
+  <text x="58" y="96" class="tiny">A large vocabulary lets Gemma 4 cover many scripts and code fragments without splitting them into tiny byte pieces.</text>
+
+  <g transform="translate(55 160)">
+    <rect width="240" height="100" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">raw text</text>
+    <text x="20" y="62" class="mono" style="fill:#151515">"Bonjour, monde!"</text>
+    <text x="20" y="86" class="tiny">any UTF-8 string</text>
+  </g>
+
+  <path class="flow" d="M295 215 C325 215 340 215 370 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(375 160)">
+    <rect width="240" height="100" rx="14" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">tokenizer</text>
+    <text x="20" y="60" class="mono">SentencePiece</text>
+    <text x="20" y="80" class="tiny">262,144 entries</text>
+  </g>
+
+  <path class="flow" d="M615 215 C645 215 660 215 690 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(695 160)">
+    <rect width="240" height="100" rx="14" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">token ids</text>
+    <text x="20" y="60" class="mono" style="fill:#151515">[57421, 19, 8823, 5]</text>
+    <text x="20" y="82" class="tiny">integer indices</text>
+  </g>
+
+  <path class="flow" d="M935 215 C970 215 985 215 1015 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(1020 175)">
+    <rect width="60" height="70" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="11" y="40" class="label">emb</text>
+  </g>
+
+  <g transform="translate(60 290)">
+    <rect width="1000" height="185" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">Why 262K vocab</text>
+    <text x="22" y="68" class="mono">- covers major world scripts + code symbols without falling back to byte-level</text>
+    <text x="22" y="92" class="mono">- fewer tokens per string -> longer effective context for the same 256K budget</text>
+    <text x="22" y="116" class="mono">- includes special control tokens (turn, system, tool)</text>
+    <text x="22" y="146" class="label">Embedding cost</text>
+    <text x="22" y="172" class="mono">262144 vocab * hidden_dim bytes sits in the weight file, not in the KV cache.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">Heuristic: avg bytes-per-token tends to scale with log2(vocab).
+
+vocab=32K    -> tokens per 1 KB English text ~ 260
+vocab=128K   -> tokens per 1 KB English text ~ 210
+vocab=262K   -> tokens per 1 KB English text ~ 185
+
+So a 256K-context window holds roughly 1.4 MB of English text
+(vs ~1.0 MB on a 32K-vocab model at the same context).</div>
+    <div class="callout sticky"><strong>Cost note:</strong> the embedding table is 262,144 * hidden_dim weights. That lives in the weight file, not the KV cache. It does NOT grow with context length. The trade is: bigger file, cheaper inference per token on average.</div>
+  </section>
+
+  <section class="diagram-wrap" id="block"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 620" role="img" aria-label="A Gemma 4 decoder block with norms, attention, MLP or MoE, and residual connections.">
+  <defs><marker id="arrow6" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="572" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">A Gemma 4 decoder block, drawn as a machine</text>
+  <text x="58" y="106" class="note">The residual stream is the notebook margin. Each sub-block writes a correction, not a whole new sentence.</text>
+
+  <path class="flow" d="M90 320 H1015" marker-end="url(#arrow6)"/>
+  <text x="90" y="292" class="tiny">residual stream</text>
+
+  <g transform="translate(140 170)">
+    <rect width="150" height="78" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="33" class="label">RMSNorm</text>
+    <text x="20" y="58" class="tiny">steady scale</text>
+  </g>
+  <path class="flow" d="M215 320 C215 282 215 270 215 248" marker-end="url(#arrow6)"/>
+  <path class="flow" d="M290 210 C340 210 360 210 405 210" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(410 150)">
+    <rect width="220" height="122" rx="18" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="34" class="label">Q/K/V attention</text>
+    <text x="26" y="61" class="tiny">Q/K/V normalization</text>
+    <text x="26" y="84" class="tiny">local or global reader</text>
+    <text x="26" y="107" class="tiny">RoPE before matching</text>
+  </g>
+  <path class="flow" d="M630 210 C690 210 710 250 725 320" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(445 390)">
+    <rect width="150" height="78" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="33" class="label">RMSNorm</text>
+    <text x="20" y="58" class="tiny">again</text>
+  </g>
+  <path class="flow" d="M520 320 C520 350 520 365 520 390" marker-end="url(#arrow6)"/>
+  <path class="flow" d="M595 430 C650 430 665 430 710 430" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(715 378)">
+    <rect width="230" height="104" rx="18" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="34" class="label">MLP / MoE</text>
+    <text x="26" y="62" class="tiny">dense in E2B/E4B/31B</text>
+    <text x="26" y="84" class="tiny">router + experts in 26B A4B</text>
+  </g>
+  <path class="flow" d="M945 430 C985 420 996 365 1005 320" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(138 505)">
+    <rect width="805" height="50" rx="14" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="32" class="mono">Output of block = old residual + attention correction + feed-forward correction.</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>The decoder block: the part that does most of the thinking</h2>
+    <p>The original Transformer gave us the broad recipe: self-attention mixes information across positions, then a position-wise feed-forward network edits each position independently.<sup><a href="#s8">8</a></sup> Gemma 4 keeps that lineage but makes modern choices around normalization, local/global attention, RoPE, and parameter efficiency.</p>
+    <div class="two-col">
+      <div class="note-card blue"><h3>1. Normalize before reading</h3><p>RMSNorm keeps the residual stream numerically calm. Keras' Gemma 4 backbone notes four norms per decoder block: pre and post around attention, and pre and post around the feed-forward path.<sup><a href="#s6">6</a></sup></p></div>
+      <div class="note-card tan"><h3>2. Build Q, K, V</h3><p>The hidden vector is projected into queries, keys, and values. Query asks: "What am I looking for?" Key says: "What do I contain?" Value says: "What should I pass along?"</p></div>
+      <div class="note-card soft"><h3>3. Read locally or globally</h3><p>Most layers can be sliding-window layers; some are full/global. This gives a cheap short-range sketch plus occasional long-range consolidation.</p></div>
+      <div class="note-card pink"><h3>4. MLP or MoE edits</h3><p>Dense models use dense feed-forward blocks. The 26B A4B model uses a sparse expert path, so a token visits a small set of experts instead of all expert parameters.</p></div>
+    </div>
+    <div class="formula">Attention sketch:
+Q = X Wq, K = X Wk, V = X Wv
+scores = Q K^T
+weights = softmax(scores)
+output = weights V
+
+Classic Transformers scale by 1/sqrt(head_dim). Gemma 4 implementation docs note Q/K/V normalization and attention scaling = 1.0 in the Keras backbone, so the stability job is handled differently in that implementation.</div>
+  </section>
+
+  <section class="diagram-wrap" id="attention"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 520" role="img" aria-label="Hybrid attention: mostly sliding windows with periodic global layers.">
+  <defs><marker id="arrow2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="25" y="25" width="1050" height="470" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="55" y="70" class="scribble title">Hybrid attention: cheap local sight, occasional full memory</text>
+  <text x="55" y="102" class="note">Five nearby-reader layers can be followed by a global-reader layer in public configs; the final layer is global.</text>
+
+  <g transform="translate(70 150)">
+    <text x="0" y="-18" class="label">Sliding attention layer</text>
+    <line x1="0" y1="60" x2="820" y2="60" stroke="#151515" stroke-width="3" stroke-linecap="round"/>
+    <g class="tokens">
+      <circle cx="20" cy="60" r="10"/><circle cx="80" cy="60" r="10"/><circle cx="140" cy="60" r="10"/><circle cx="200" cy="60" r="10"/><circle cx="260" cy="60" r="10"/><circle cx="320" cy="60" r="10"/><circle cx="380" cy="60" r="10"/><circle cx="440" cy="60" r="10"/><circle cx="500" cy="60" r="10"/><circle cx="560" cy="60" r="10"/><circle cx="620" cy="60" r="10"/><circle cx="680" cy="60" r="10"/><circle cx="740" cy="60" r="10"/><circle cx="800" cy="60" r="10"/>
+    </g>
+    <rect class="window" x="75" y="20" width="250" height="80" rx="15" fill="#e2f1ff" fill-opacity="0.55" stroke="#151515" stroke-width="2.2" stroke-dasharray="8 7">
+      <animate attributeName="x" values="15;310;550;15" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="860" y="48" class="tiny">each token sees</text>
+    <text x="860" y="70" class="tiny">only a window</text>
+  </g>
+
+  <g transform="translate(70 320)">
+    <text x="0" y="-18" class="label">Global attention layer</text>
+    <line x1="0" y1="60" x2="820" y2="60" stroke="#151515" stroke-width="3" stroke-linecap="round"/>
+    <g class="tokens">
+      <circle cx="20" cy="60" r="10"/><circle cx="80" cy="60" r="10"/><circle cx="140" cy="60" r="10"/><circle cx="200" cy="60" r="10"/><circle cx="260" cy="60" r="10"/><circle cx="320" cy="60" r="10"/><circle cx="380" cy="60" r="10"/><circle cx="440" cy="60" r="10"/><circle cx="500" cy="60" r="10"/><circle cx="560" cy="60" r="10"/><circle cx="620" cy="60" r="10"/><circle cx="680" cy="60" r="10"/><circle cx="740" cy="60" r="10"/><circle cx="800" cy="60" r="10"/>
+    </g>
+    <path class="arc a1" d="M20 52 C120 -30 700 -30 800 52"/>
+    <path class="arc a2" d="M80 52 C170 10 590 10 680 52"/>
+    <path class="arc a3" d="M260 52 C350 0 470 0 560 52"/>
+    <text x="860" y="50" class="tiny">long links refresh</text>
+    <text x="860" y="72" class="tiny">the whole context</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>Hybrid attention: the 256K-context escape hatch</h2>
+    <p>A full attention layer over 256K tokens is expensive because every position can compare itself with every other position. Gemma 4's model card says the models interleave local sliding-window attention with full global attention, and that the final layer is always global. Public implementation docs describe a repeating local/global pattern; the 31B public config shows five sliding layers followed by one full layer across 60 layers.<sup><a href="#s1">1</a> <a href="#s5">5</a> <a href="#s6">6</a></sup></p>
+    <div class="calc">For a 256K context, N = 262,144 tokens.
+
+Full attention scores per head:
+N^2 = 262,144^2 = 68,719,476,736 scores
+
+Sliding-window scores with W = 1,024:
+N * W = 262,144 * 1,024 = 268,435,456 scores
+
+Reduction for that layer:
+68,719,476,736 / 268,435,456 = 256x fewer score entries</div>
+    <p>That does not mean the model "ignores" long-range information. Think of local layers as scribbling in the margins near each paragraph. Global layers are the periodic table-of-contents pass, when distant sections can directly meet.</p>
+  </section>
+
+  <section class="sheet" id="gqa">
+    <h2>Step 6 - GQA: many askers, fewer answerers</h2>
+    <p>Grouped-Query Attention (GQA) splits the trade between Multi-Head Attention (one KV per Q head, expensive) and Multi-Query Attention (one KV for all, cheap but lossy). Each KV head serves a group of Q heads.<sup><a href="#s10">10</a></sup> The 31B public config uses 32 query heads with 16 KV heads in sliding layers and 4 KV heads in global layers.<sup><a href="#s5">5</a></sup></p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Grouped-Query Attention in Gemma 4: many query heads share fewer key-value heads.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 16px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .qhead{fill:#e2f1ff;stroke:#151515;stroke-width:2.2}
+    .kvhead{fill:#f8e7c9;stroke:#151515;stroke-width:2.5}
+    .qhead.active{animation:pulseQ 2.4s ease-in-out infinite}
+    .kvhead.active{animation:pulseKV 2.4s ease-in-out infinite}
+    @keyframes dash{to{stroke-dashoffset:-120}}
+    @keyframes pulseQ{0%,100%{fill:#e2f1ff}50%{fill:#bfd8ee}}
+    @keyframes pulseKV{0%,100%{fill:#f8e7c9}50%{fill:#eac790}}
+  </style>
+  <defs><marker id="ga" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Grouped-Query Attention: many askers, fewer answerers</text>
+  <text x="58" y="102" class="note tiny">In local layers: 32 Q heads share 16 KV heads -> each KV head answers 2 Qs. In global layers of the 31B: 32 Q heads share 4 KV heads -> each answers 8.</text>
+
+  <g transform="translate(60 145)">
+    <text x="0" y="0" class="label">Query heads (32)</text>
+    <g id="qRow">
+      <rect class="qhead active" x="0" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead active" x="32" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="64" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="96" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="128" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="160" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="192" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="224" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="256" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="288" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="320" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="352" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="384" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="416" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="448" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="480" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="512" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="544" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="576" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="608" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="640" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="672" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="704" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="736" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="768" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="800" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="832" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="864" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="896" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="928" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="960" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="992" y="20" width="28" height="34" rx="6"/>
+    </g>
+  </g>
+
+  <g id="bundles" stroke="#151515" stroke-width="1.8" opacity="0.7" fill="none">
+    <path class="flow" d="M76 210 C76 240 85 270 108 295"/>
+    <path class="flow" d="M140 210 C140 240 135 270 132 295"/>
+    <path class="flow" d="M204 210 C204 240 220 265 240 295"/>
+    <path class="flow" d="M268 210 C268 240 260 260 260 295"/>
+    <path class="flow" d="M332 210 C332 240 350 265 372 295"/>
+    <path class="flow" d="M396 210 C396 240 390 260 390 295"/>
+    <path class="flow" d="M460 210 C460 240 480 265 504 295"/>
+    <path class="flow" d="M524 210 C524 240 520 260 522 295"/>
+    <path class="flow" d="M588 210 C588 240 610 265 636 295"/>
+    <path class="flow" d="M652 210 C652 240 650 260 652 295"/>
+    <path class="flow" d="M716 210 C716 240 740 265 768 295"/>
+    <path class="flow" d="M780 210 C780 240 780 260 784 295"/>
+    <path class="flow" d="M844 210 C844 240 875 265 900 295"/>
+    <path class="flow" d="M908 210 C908 240 910 260 914 295"/>
+    <path class="flow" d="M972 210 C972 240 1005 265 1030 295"/>
+    <path class="flow" d="M1006 210 C1006 240 1020 260 1044 295"/>
+  </g>
+
+  <g transform="translate(60 310)">
+    <text x="0" y="0" class="label">Key/Value heads (16 in local layers)</text>
+    <g>
+      <rect class="kvhead active" x="48" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="112" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="176" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="240" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="304" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="368" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="432" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="496" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="560" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="624" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="688" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="752" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="816" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="880" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="944" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="1008" y="20" width="56" height="54" rx="8"/>
+    </g>
+  </g>
+
+  <g transform="translate(60 435)">
+    <rect width="1000" height="80" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="34" class="mono">Why GQA: each KV head serves a whole group of Qs, shrinking the KV cache proportionally.</text>
+    <text x="24" y="60" class="mono">Cache saving vs full multi-head: local layers store 16/32 = 50%; global layers in 31B store 4/32 = 12.5%.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">KV cache bytes per token per layer, at head_dim = 256, BF16 (2 bytes):
+
+Full MHA (hypothetical 32 KV): 2 * 32 * 256 * 2 = 32,768 bytes
+Local GQA (16 KV):              2 * 16 * 256 * 2 = 16,384 bytes   (50%)
+Global GQA (4 KV, dim 512):     2 *  4 * 512 * 2 =  8,192 bytes   (25%)
+
+Savings compound across 60 layers and 262K tokens.</div>
+    <div class="callout"><strong>Why this is not just "a cache trick":</strong> with fewer KV heads, you also need less bandwidth to move them off HBM at each decode step. That is often the real bottleneck on GPUs, not arithmetic.</div>
+  </section>
+
+  <section class="sheet" id="pattern">
+    <h2>Step 7 - The 60-layer rhythm</h2>
+    <p>Public 31B config uses a repeating pattern of 5 sliding local layers followed by 1 full global layer across 60 layers.<sup><a href="#s5">5</a></sup> The final layer is always global so the last prediction sees the full context.</p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 400" role="img" aria-label="Gemma 4 31B 60-layer attention pattern: 5 sliding local layers followed by 1 full global layer, last layer global.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .local{fill:#e2f1ff;stroke:#151515;stroke-width:1.8}
+    .global{fill:#fbf0f9;stroke:#151515;stroke-width:2.4}
+    .tick{stroke:#151515;stroke-width:1.4;stroke-dasharray:3 3}
+    .blink{animation:blink 2.4s ease-in-out infinite}
+    @keyframes blink{0%,100%{fill:#fbf0f9}50%{fill:#f3d4ee}}
+  </style>
+  <rect x="24" y="24" width="1072" height="352" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">The 60-layer rhythm: five local, one global (Gemma 4 31B public config)</text>
+  <text x="58" y="96" class="tiny">Blue = sliding local layer. Pink = full global layer. Last layer is always global. Pattern: 5 local + 1 global, repeating.</text>
+
+  <g transform="translate(60 160)">
+    <g id="layers"></g>
+  </g>
+
+  <script type="application/ecmascript"><![CDATA[]]></script>
+
+  <g transform="translate(60 160)">
+    <rect class="local" x="0" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="16" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="32" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="48" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="64" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="80" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="104" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="120" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="136" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="152" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="168" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="184" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="208" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="224" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="240" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="256" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="272" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="288" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="312" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="328" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="344" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="360" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="376" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="392" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="416" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="432" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="448" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="464" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="480" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="496" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="520" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="536" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="552" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="568" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="584" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="600" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="624" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="640" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="656" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="672" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="688" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="704" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="728" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="744" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="760" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="776" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="792" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="808" y="0" width="16" height="60" rx="3"/>
+
+    <rect class="local" x="832" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="848" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="864" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="880" y="0" width="14" height="60" rx="3"/>
+    <rect class="local" x="896" y="0" width="14" height="60" rx="3"/>
+    <rect class="global blink" x="912" y="0" width="16" height="60" rx="3"/>
+
+    <text x="0" y="-10" class="tiny">layer 1</text>
+    <text x="905" y="-10" class="tiny">layer 60 (global)</text>
+  </g>
+
+  <g transform="translate(60 260)">
+    <rect width="1000" height="95" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="mono">50 sliding layers + 10 global layers = 60 total.</text>
+    <text x="22" y="62" class="mono">Global layers cost full-attention KV; sliding layers keep a rolling 1024-token window.</text>
+    <text x="22" y="86" class="mono">Final layer is global so the last decision sees the full context.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">60 layers / 6-long pattern = 10 full groups -> 50 sliding + 10 global.
+
+Share of KV memory at 256K context (per earlier table):
+Local layers: 1024 * 50 * 16384 bytes =  0.78 GiB  ( 3.8% )
+Global layers: 262144 * 10 * 8192 bytes = 20.0 GiB (96.2% )
+
+-> global layers dominate KV memory even though they're only 1 in 6.</div>
+  </section>
+
+  <section class="diagram-wrap" id="rope"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Rotary position embedding sketch.">
+  <defs><marker id="arrow5" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">RoPE: position as rotation, not a glued-on number</text>
+  <text x="58" y="106" class="note">A vector pair is rotated by an angle tied to its position. Dot products then carry relative distance information.</text>
+
+  <g transform="translate(245 280)">
+    <circle cx="0" cy="0" r="145" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <line x1="-165" y1="0" x2="165" y2="0" stroke="#151515" stroke-width="2"/>
+    <line x1="0" y1="165" x2="0" y2="-165" stroke="#151515" stroke-width="2"/>
+    <path class="arc a1" d="M90 -80 A120 120 0 0 1 142 25" fill="none" stroke="#151515" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <line x1="0" y1="0" x2="105" y2="-75" stroke="#151515" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <line class="rotvec" x1="0" y1="0" x2="135" y2="35" stroke="#151515" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <text x="-70" y="205" class="tiny">same content vector, turned by position</text>
+  </g>
+
+  <g transform="translate(520 170)">
+    <rect width="485" height="220" rx="20" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="46" class="label">In a text layer</text>
+    <text x="26" y="79" class="tiny">Q and K are rotated before attention.</text>
+    <text x="26" y="112" class="label">In a global Gemma 4 layer</text>
+    <text x="26" y="145" class="tiny">public config uses proportional RoPE and partial rotation.</text>
+    <text x="26" y="178" class="label">In the vision encoder</text>
+    <text x="26" y="211" class="tiny">2D position handles x and y direction separately.</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>RoPE and p-RoPE: position as a rotation</h2>
+    <p>RoPE, short for Rotary Position Embedding, rotates parts of the query and key vectors by an angle tied to token position. The useful trick is that the dot product between rotated vectors carries relative position information without adding a separate position vector to the token.<sup><a href="#s9">9</a></sup></p>
+    <p>Gemma 4 uses ordinary RoPE-style behavior for local/sliding attention and proportional RoPE for full/global layers in public configs. The intuition is simple: local layers only need precise nearby geometry; global layers need a position scheme that remains usable across very long context. For images, Gemma 4 also needs two-dimensional position information: left-right and up-down, not just "token number 42".<sup><a href="#s3">3</a> <a href="#s5">5</a></sup></p>
+  </section>
+
+  <section class="diagram-wrap" id="kv"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="KV cache memory calculation comparing naive full cache and Gemma 4 hybrid cache estimate.">
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">KV cache math: why hybrid attention matters</text>
+  <text x="58" y="106" class="note">Approximation for 31B public config, BF16 KV, batch size 1. Real runtimes add their own allocator and paging details.</text>
+
+  <g transform="translate(90 170)">
+    <text x="0" y="-22" class="label">If all 60 layers stored full 256K context with local KV size</text>
+    <rect x="0" y="0" width="860" height="76" rx="15" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <rect class="bar grow-wide" x="0" y="0" width="860" height="76" rx="15" fill="#f5b6a5" fill-opacity="0.55"/>
+    <text x="28" y="48" class="mono">about 240 GiB</text>
+  </g>
+
+  <g transform="translate(90 310)">
+    <text x="0" y="-22" class="label">Hybrid idea: local layers keep a window; global layers keep long-range cache</text>
+    <rect x="0" y="0" width="860" height="76" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <rect class="bar grow-short" x="0" y="0" width="75" height="76" rx="15" fill="#aee4c1" fill-opacity="0.7"/>
+    <text x="28" y="48" class="mono">about 20.8 GiB</text>
+  </g>
+
+  <g transform="translate(92 430)">
+    <rect width="860" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">Full attention scores: 262144^2=68.7B; local window scores: 262144*1024=268M; reduction=256x.</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>KV cache math you can feel</h2>
+    <p>When a decoder generates text, it stores keys and values from previous tokens so it does not recompute the whole prompt for every new word. That storage is the KV cache. Long context makes the cache large; sliding attention makes most layers only need a rolling window.</p>
+    <p>The following calculation uses public 31B config values: 60 layers, 32 query heads, 16 key-value heads in sliding layers, 4 global key-value heads with 512 global head dimension, BF16 at 2 bytes per number, and a public layer pattern with 10 global layers and 50 sliding layers.<sup><a href="#s5">5</a></sup></p>
+    <div class="calc">Local KV bytes per token per layer:
+2 for K,V * 16 KV heads * 256 head_dim * 2 BF16 bytes = 16,384 bytes
+
+Naive full cache for all 60 layers:
+262,144 tokens * 60 layers * 16,384 bytes = 240 GiB
+
+Hybrid-style estimate:
+Local layers: 1,024 window * 50 layers * 16,384 bytes = 0.78 GiB
+Global layers: 262,144 tokens * 10 layers * (2 * 4 * 512 * 2 bytes) = 20.0 GiB
+Total rough KV = 20.78 GiB</div>
+    <p class="small muted">This is a teaching estimate. Real memory depends on runtime, quantized KV cache, padding, batching, paged attention, allocator overhead, and whether the framework keeps local-layer cache in a compact rolling form.</p>
+  </section>
+
+  <section class="diagram-wrap" id="vision"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Gemma 4 vision token budget calculation from patches to pooled tokens.">
+  <defs><marker id="arrow3" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="22" y="22" width="1076" height="516" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Vision tokens: the 280-token worked example</text>
+  <text x="58" y="101" class="note">Default soft-token budget = 280. Before pooling, that is 280 * 9 = 2,520 image patches.</text>
+
+  <g transform="translate(75 160)">
+    <rect width="300" height="210" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="3"/>
+    <path d="M0 35 H300 M0 70 H300 M0 105 H300 M0 140 H300 M0 175 H300 M50 0 V210 M100 0 V210 M150 0 V210 M200 0 V210 M250 0 V210" stroke="#151515" stroke-width="1.2" opacity="0.45"/>
+    <text x="38" y="242" class="label">960 x 672 image</text>
+    <text x="36" y="268" class="tiny">60 x 42 patches, each 16px</text>
+  </g>
+
+  <path class="flow" d="M395 260 C450 260 460 260 510 260" marker-end="url(#arrow3)"/>
+
+  <g transform="translate(520 150)">
+    <rect width="210" height="230" rx="14" fill="#fff" stroke="#151515" stroke-width="3"/>
+    <text x="22" y="44" class="label">3 x 3 average pool</text>
+    <g transform="translate(46 72)">
+      <rect width="108" height="108" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <path d="M36 0 V108 M72 0 V108 M0 36 H108 M0 72 H108" stroke="#151515" stroke-width="2"/>
+      <circle class="pulse-dot" cx="54" cy="54" r="12" fill="#151515"/>
+    </g>
+    <text x="30" y="210" class="tiny">9 patches collapse</text>
+    <text x="30" y="230" class="tiny">into 1 soft token</text>
+  </g>
+
+  <path class="flow" d="M750 260 C800 260 813 260 860 260" marker-end="url(#arrow3)"/>
+
+  <g transform="translate(870 160)">
+    <rect width="190" height="210" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="3"/>
+    <path d="M0 15 H190 M0 30 H190 M0 45 H190 M0 60 H190 M0 75 H190 M0 90 H190 M0 105 H190 M0 120 H190 M0 135 H190 M0 150 H190 M0 165 H190 M0 180 H190 M0 195 H190 M13 0 V210 M26 0 V210 M39 0 V210 M52 0 V210 M65 0 V210 M78 0 V210 M91 0 V210 M104 0 V210 M117 0 V210 M130 0 V210 M143 0 V210 M156 0 V210 M169 0 V210 M182 0 V210" stroke="#151515" stroke-width="0.8" opacity="0.45"/>
+    <text x="28" y="242" class="label">20 x 14 = 280</text>
+    <text x="17" y="268" class="tiny">soft tokens enter decoder</text>
+  </g>
+
+  <g transform="translate(82 430)">
+    <rect width="955" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">60*42=2520 patches; 2520/9=280 tokens; 960*672=645120 pixels.</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>Vision: variable resolution instead of one forced square</h2>
+    <p>Gemma 4's vision path is one of the cleaner design shifts: it can preserve image aspect ratio while controlling cost with a token budget. Hugging Face's Gemma 4 docs describe token budgets of 70, 140, 280, 560, and 1,120 soft tokens, with 280 as the default. They also state that the pre-pooling patch count is nine times the soft-token budget because 3x3 neighboring patches are averaged into one final visual token.<sup><a href="#s3">3</a></sup></p>
+    <div class="calc">Default image budget = 280 soft tokens
+Pre-pooling patches = 280 * 9 = 2,520 patches
+Each patch = 16 * 16 pixels
+One exact grid: 60 * 42 patches = 2,520 patches
+Image size: (60*16) by (42*16) = 960 by 672 pixels
+After 3x3 pooling: (60/3) * (42/3) = 20 * 14 = 280 visual tokens</div>
+    <p>Google's vision docs describe the tradeoff plainly: high budgets preserve more detail; low budgets reduce inference cost. That is why a document OCR prompt may deserve 560 or 1,120 tokens, while a quick scene caption can often live with 140 or 280.<sup><a href="#s4">4</a></sup></p>
+    <div class="callout"><strong>Practical rule:</strong> use the smallest image budget that still preserves the detail your question depends on. If the question is about a small label, a tiny chart axis, or a receipt line item, spend more visual tokens.</div>
+  </section>
+
+  <section class="sheet" id="audio">
+    <h2>Step 11 - Audio, on E2B and E4B only</h2>
+    <p>Only the smaller models take audio input. The design choice makes sense: E2B and E4B are the models built for device-local assistants, where you want voice transcription without a cloud round-trip. The 26B and 31B are rarely deployed in the same loop as a mic.<sup><a href="#s1">1</a> <a href="#s7">7</a></sup></p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Audio encoder path on E2B and E4B: waveform to mel frames to audio tokens merged into the decoder sequence.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .wv{stroke:#151515;stroke-width:2;fill:none}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes wobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    .t1{animation:wobble 2s ease-in-out infinite}
+    .t2{animation:wobble 2.4s ease-in-out infinite}
+    .t3{animation:wobble 2.8s ease-in-out infinite}
+  </style>
+  <defs><marker id="aa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Audio path (E2B / E4B): waveform to tokens the decoder can read</text>
+  <text x="58" y="100" class="tiny">The 26B A4B and 31B models do not take audio. On E2B/E4B, the audio encoder's outputs join the same sequence as text and image tokens.</text>
+
+  <g transform="translate(55 160)">
+    <rect width="180" height="110" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">raw audio</text>
+    <path class="wv" d="M20 80 Q34 50 48 80 T76 80 T104 80 T132 80 T160 80"/>
+    <text x="22" y="105" class="tiny">16 kHz waveform</text>
+  </g>
+
+  <path class="flow" d="M235 215 C265 215 275 215 300 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(305 160)">
+    <rect width="180" height="110" rx="14" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">mel frames</text>
+    <g fill="#f8e7c9" stroke="#151515" stroke-width="1.2">
+      <rect x="18" y="50" width="20" height="46" rx="3"/>
+      <rect x="42" y="58" width="20" height="38" rx="3"/>
+      <rect x="66" y="44" width="20" height="52" rx="3"/>
+      <rect x="90" y="64" width="20" height="32" rx="3"/>
+      <rect x="114" y="50" width="20" height="46" rx="3"/>
+      <rect x="138" y="56" width="20" height="40" rx="3"/>
+    </g>
+  </g>
+
+  <path class="flow" d="M485 215 C515 215 525 215 550 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(555 160)">
+    <rect width="200" height="110" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">audio encoder</text>
+    <text x="22" y="58" class="tiny">convolutional frontend</text>
+    <text x="22" y="80" class="tiny">+ transformer layers</text>
+    <text x="22" y="100" class="tiny">outputs audio-token embeddings</text>
+  </g>
+
+  <path class="flow" d="M755 215 C790 215 805 215 830 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(835 170)">
+    <rect width="220" height="90" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">merged sequence</text>
+    <g transform="translate(22 50)">
+      <circle class="t1" cx="10" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <circle class="t2" cx="34" cy="10" r="8" fill="#e2f1ff" stroke="#151515" stroke-width="2"/>
+      <circle class="t3" cx="58" cy="10" r="8" fill="#e8f5dd" stroke="#151515" stroke-width="2"/>
+      <circle class="t1" cx="82" cy="10" r="8" fill="#e8f5dd" stroke="#151515" stroke-width="2"/>
+      <circle class="t2" cx="106" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <circle class="t3" cx="130" cy="10" r="8" fill="#e2f1ff" stroke="#151515" stroke-width="2"/>
+      <circle class="t1" cx="154" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+    </g>
+    <text x="22" y="80" class="tiny">text + image + audio mixed</text>
+  </g>
+
+  <g transform="translate(60 320)">
+    <rect width="1000" height="150" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="40" class="label">Why audio on the edge models only</text>
+    <text x="22" y="68" class="mono">E2B and E4B are designed for device-local voice assistants, live transcription, and dictation.</text>
+    <text x="22" y="92" class="mono">Adding an audio head to 26B A4B / 31B would mostly duplicate cloud STT capability.</text>
+    <text x="22" y="120" class="mono">Audio tokens share the same residual stream as text - no separate model.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">Rough audio-token budget for a 30-second clip:
+
+16 kHz waveform, 10 ms hop -> 100 mel frames per second
+30 sec * 100 frames/sec = 3,000 mel frames
+After encoder downsampling (~4x): ~750 audio tokens
+
+So a 30-second voice note adds ~750 tokens to the sequence,
+leaving plenty of room in a 128K-context E4B for follow-up turns.</div>
+  </section>
+
+  <section class="diagram-wrap" id="moe"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Mixture of experts routing in Gemma 4 26B A4B.">
+  <defs><marker id="arrow4" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="72" class="scribble title">MoE: a 26B library, about 3.8B active per token</text>
+  <text x="58" y="104" class="note">A router scores experts, opens a small set, and combines their answers with the shared path.</text>
+
+  <g transform="translate(70 220)">
+    <rect width="135" height="86" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="32" y="35" class="label">token</text>
+    <text x="20" y="62" class="tiny">hidden vector</text>
+  </g>
+  <path class="flow" d="M205 263 C260 263 280 263 330 263" marker-end="url(#arrow4)"/>
+  <g transform="translate(340 200)">
+    <rect width="160" height="125" rx="18" fill="#fff" stroke="#151515" stroke-width="2.6"/>
+    <text x="35" y="38" class="label">router</text>
+    <text x="20" y="70" class="tiny">top 8 experts</text>
+    <text x="20" y="92" class="tiny">+ shared expert</text>
+    <circle class="pulse-dot" cx="126" cy="35" r="8" fill="#151515"/>
+  </g>
+
+  <path class="flow" d="M500 263 C548 245 562 228 612 208" marker-end="url(#arrow4)"/>
+  <path class="flow" d="M500 263 C548 263 562 263 612 263" marker-end="url(#arrow4)"/>
+  <path class="flow" d="M500 263 C548 285 562 304 612 324" marker-end="url(#arrow4)"/>
+
+  <g transform="translate(620 140)">
+    <text x="0" y="-18" class="label">128 total expert blocks</text>
+    <g class="experts">
+      <rect class="expert active" x="0" y="0" width="52" height="38" rx="8"/><rect class="expert" x="62" y="0" width="52" height="38" rx="8"/><rect class="expert" x="124" y="0" width="52" height="38" rx="8"/><rect class="expert active" x="186" y="0" width="52" height="38" rx="8"/><rect class="expert" x="248" y="0" width="52" height="38" rx="8"/>
+      <rect class="expert" x="0" y="50" width="52" height="38" rx="8"/><rect class="expert active" x="62" y="50" width="52" height="38" rx="8"/><rect class="expert" x="124" y="50" width="52" height="38" rx="8"/><rect class="expert" x="186" y="50" width="52" height="38" rx="8"/><rect class="expert active" x="248" y="50" width="52" height="38" rx="8"/>
+      <rect class="expert active" x="0" y="100" width="52" height="38" rx="8"/><rect class="expert" x="62" y="100" width="52" height="38" rx="8"/><rect class="expert" x="124" y="100" width="52" height="38" rx="8"/><rect class="expert active" x="186" y="100" width="52" height="38" rx="8"/><rect class="expert" x="248" y="100" width="52" height="38" rx="8"/>
+      <rect class="expert" x="0" y="150" width="52" height="38" rx="8"/><rect class="expert active" x="62" y="150" width="52" height="38" rx="8"/><rect class="expert" x="124" y="150" width="52" height="38" rx="8"/><rect class="expert" x="186" y="150" width="52" height="38" rx="8"/><rect class="expert active" x="248" y="150" width="52" height="38" rx="8"/>
+    </g>
+  </g>
+
+  <g transform="translate(950 220)">
+    <rect width="95" height="95" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.6"/>
+    <text x="22" y="37" class="label">mix</text>
+    <text x="15" y="62" class="tiny">weighted</text>
+    <text x="15" y="80" class="tiny">sum</text>
+  </g>
+  <path class="flow" d="M920 262 C930 262 938 262 950 262" marker-end="url(#arrow4)"/>
+
+  <g transform="translate(72 430)">
+    <rect width="975" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">3.8B / 25.2B = 15.1% of parameters active for a token, before runtime overheads.</text>
+  </g>
+</svg></section>
+
+  <section class="sheet">
+    <h2>MoE: 26B A4B is not "a 4B model" and not "a 26B dense model"</h2>
+    <p>The 26B A4B variant is a sparse Mixture-of-Experts model. The official model card lists 25.2B total parameters, 3.8B active parameters, 30 layers, 128 total experts, 8 active experts, and 1 shared expert.<sup><a href="#s1">1</a></sup> The ancestral idea goes back to sparse MoE layers: use conditional computation so capacity rises faster than per-token compute.<sup><a href="#s11">11</a></sup></p>
+    <div class="calc">Active-parameter ratio:
+3.8B active / 25.2B total = 0.1508 = 15.1%
+
+Interpretation:
+The checkpoint can store a 25.2B-parameter expert library.
+A token only uses a routed subset plus the shared path.
+So per-token compute behaves much closer to the active size than to the total size.</div>
+    <p>The subtlety: routing is per token, not per whole prompt. In one sentence, the code-like token may route to different experts than a table header or a French phrase. That is why MoE can feel like many small specialists living inside one model.</p>
+  </section>
+
+  <section class="sheet" id="ple">
+    <h2>Step 13 - PLE: per-layer notes for the small models</h2>
+    <p>The "E" in E2B and E4B means effective parameters. These smaller models use Per-Layer Embeddings (PLE), where each decoder layer gets its own auxiliary embedding signal rather than relying only on the first token embedding.<sup><a href="#s1">1</a></sup></p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Per-Layer Embeddings (PLE) for E2B/E4B: token-identity plus context-aware projection, scaled and fed into each decoder layer.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .traveller{animation:drift 5s linear infinite;transform-origin:center}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes drift{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+  </style>
+  <defs><marker id="pa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">PLE: per-layer notes for the small Gemma 4 models</text>
+  <text x="58" y="98" class="tiny">Two signals per layer: a lookup by token id + a context-aware projection. Summed, scaled by 1/sqrt(2), handed to each decoder layer.</text>
+
+  <g transform="translate(55 150)">
+    <rect width="170" height="90" rx="14" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">token ids</text>
+    <text x="20" y="60" class="tiny">integer sequence</text>
+    <text x="20" y="80" class="tiny">from tokenizer</text>
+  </g>
+
+  <path class="flow" d="M225 195 C265 195 275 165 310 165" marker-end="url(#pa)"/>
+  <path class="flow" d="M225 195 C265 195 275 230 310 230" marker-end="url(#pa)"/>
+
+  <g transform="translate(315 120)">
+    <rect width="230" height="90" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="18" y="34" class="label">token-identity PLE</text>
+    <text x="18" y="60" class="tiny">lookup table keyed by id</text>
+    <text x="18" y="80" class="tiny">one row per layer</text>
+  </g>
+
+  <g transform="translate(315 210)">
+    <rect width="230" height="90" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="18" y="34" class="label">context-aware PLE</text>
+    <text x="18" y="60" class="tiny">projection of input embedding</text>
+    <text x="18" y="80" class="tiny">used for image/audio positions too</text>
+  </g>
+
+  <path class="flow" d="M545 165 C600 165 615 195 650 195" marker-end="url(#pa)"/>
+  <path class="flow" d="M545 255 C600 255 615 225 650 225" marker-end="url(#pa)"/>
+
+  <g transform="translate(655 170)">
+    <rect width="170" height="90" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="32" y="36" class="label">sum + 1/sqrt(2)</text>
+    <text x="36" y="66" class="mono">(A + B) * 0.707</text>
+  </g>
+
+  <path class="flow" d="M825 215 C860 215 870 215 900 215" marker-end="url(#pa)"/>
+
+  <g transform="translate(905 150)">
+    <rect width="160" height="130" rx="16" fill="#fbf0f9" stroke="#151515" stroke-width="2.6"/>
+    <text x="18" y="34" class="label">layer L input</text>
+    <text x="18" y="60" class="tiny">residual + PLE_L</text>
+    <text x="18" y="82" class="tiny">separate signal per</text>
+    <text x="18" y="100" class="tiny">layer 1..35 / 1..42</text>
+  </g>
+
+  <g transform="translate(60 340)">
+    <rect width="1000" height="105" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">The trick in plain English</text>
+    <text x="22" y="68" class="mono">Instead of only telling layer 30 what layer 29 just produced,</text>
+    <text x="22" y="92" class="mono">the model also slips layer 30 a compact reminder of the original token identity.</text>
+  </g>
+
+  <g transform="translate(60 465)">
+    <rect width="1000" height="55" rx="14" fill="#fff" stroke="#151515" stroke-width="2"/>
+    <text x="22" y="34" class="mono">E2B: 35 layers * PLE row width -> stored once, re-used every forward pass. Cheap storage trades for richer per-layer signal.</text>
+  </g>
+
+  <circle class="traveller" r="6" fill="#151515">
+    <animateMotion dur="4.5s" repeatCount="indefinite" path="M225 195 L315 165 L545 165 L650 195 L825 215 L900 215"/>
+  </circle>
+  <circle class="traveller" r="6" fill="#aee4c1">
+    <animateMotion dur="5.2s" begin="1s" repeatCount="indefinite" path="M225 195 L315 255 L545 255 L650 225 L825 215 L900 215"/>
+  </circle>
+</svg>
+</div>
+    <p>Hugging Face's implementation notes describe two PLE pieces: a token-identity lookup for the input IDs, and a context-aware projection from the input embeddings. The two are summed and scaled by 1/sqrt(2) before entering each decoder layer. For multimodal inputs where token IDs are unavailable, only the context-aware projection is used.<sup><a href="#s3">3</a></sup></p>
+    <div class="formula">PLE_layer_input = (token_identity + context_aware_projection) * (1/sqrt(2))
+
+Variance check: if A and B are unit-variance and independent,
+Var(A + B) = 2, so multiplying by 1/sqrt(2) keeps unit variance.
+This is why the scaling is 1/sqrt(2), not 1/2.</div>
+    <p>That is a useful on-device move. Some parameters live in embedding lookups rather than heavier repeated compute. You can have a larger stored vocabulary-conditioned signal without making every forward pass behave like a much larger dense transformer.</p>
+  </section>
+
+  <section class="sheet" id="quant">
+    <h2>Step 14 - Quantization: fitting Gemma 4 into real memory</h2>
+    <p>Weight memory shrinks roughly in proportion to bit-width: BF16 is 2 bytes/param, SFP8 is 1 byte/param, and Q4 is 0.5 bytes/param with some overhead for scales and zero-points.<sup><a href="#s2">2</a></sup></p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Approximate weight memory of Gemma 4 models at BF16, SFP8, and Q4.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .bar{stroke:#151515;stroke-width:2.2;transform-origin:left center}
+    .grow{animation:grow 1.6s ease-out both}
+    @keyframes grow{from{transform:scaleX(.02)}to{transform:scaleX(1)}}
+  </style>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">Weight memory per model: BF16 vs SFP8 vs Q4</text>
+  <text x="58" y="98" class="tiny">Approximate inference weight memory from Google's overview. Real runtime adds KV cache, activations, and framework overhead.</text>
+
+  <g transform="translate(70 150)">
+    <text x="0" y="0" class="label">E2B</text>
+    <rect class="bar grow" x="120" y="-20" width="20" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="10" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="6" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="150" y="-2" class="mono">BF16 ~10 GB</text>
+    <text x="150" y="26" class="mono">SFP8 ~5 GB</text>
+    <text x="150" y="54" class="mono">Q4 ~3.2 GB</text>
+  </g>
+
+  <g transform="translate(70 240)">
+    <text x="0" y="0" class="label">E4B</text>
+    <rect class="bar grow" x="120" y="-20" width="32" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="16" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="10" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="170" y="-2" class="mono">BF16 ~16 GB</text>
+    <text x="170" y="26" class="mono">SFP8 ~8 GB</text>
+    <text x="170" y="54" class="mono">Q4 ~5 GB</text>
+  </g>
+
+  <g transform="translate(70 330)">
+    <text x="0" y="0" class="label">26B A4B</text>
+    <rect class="bar grow" x="120" y="-20" width="100" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="50" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="31" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="240" y="-2" class="mono">BF16 ~50 GB</text>
+    <text x="240" y="26" class="mono">SFP8 ~25 GB</text>
+    <text x="240" y="54" class="mono">Q4 ~15.6 GB</text>
+  </g>
+
+  <g transform="translate(70 420)">
+    <text x="0" y="0" class="label">31B</text>
+    <rect class="bar grow" x="120" y="-20" width="120" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="60" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="35" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="260" y="-2" class="mono">BF16 ~60 GB</text>
+    <text x="260" y="26" class="mono">SFP8 ~30 GB</text>
+    <text x="260" y="54" class="mono">Q4 ~17.4 GB</text>
+  </g>
+
+  <g transform="translate(620 150)">
+    <rect width="440" height="300" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">The quick decision table</text>
+    <text x="22" y="70" class="mono">phone / Pi-class: Q4 E2B</text>
+    <text x="22" y="96" class="mono">laptop CPU-only: Q4 E4B</text>
+    <text x="22" y="122" class="mono">16 GB GPU: Q4 26B A4B (long-context)</text>
+    <text x="22" y="148" class="mono">24 GB GPU: Q4 31B (max dense quality)</text>
+    <text x="22" y="180" class="label">Why these feel different</text>
+    <text x="22" y="208" class="tiny">Quantization shrinks weights, not KV cache.</text>
+    <text x="22" y="228" class="tiny">Long contexts still need GiBs of KV on top.</text>
+    <text x="22" y="256" class="tiny">MoE stores more weights than it activates,</text>
+    <text x="22" y="276" class="tiny">so compute per token stays small at Q4.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">Important: quantization shrinks WEIGHTS, not the KV cache.
+
+For 31B at 256K context (from earlier), KV cache alone ~ 20.8 GiB.
+If you quantize weights to Q4 (~17.4 GB) on a 24 GB card,
+you still need to leave room for KV + activations + framework.
+
+Rule of thumb for VRAM planning:
+weight_memory + kv_cache_at_max_context + 10-20% overhead</div>
+  </section>
+
+  <section class="sheet" id="infer">
+    <h2>Step 15 - Prefill vs decode: why the first token feels slower</h2>
+    <p>When you send a long prompt, the model runs two distinct phases. <strong>Prefill</strong> pushes every prompt token through every layer at once and fills the KV cache. <strong>Decode</strong> then appends one token per step, reading (not rebuilding) the cache.</p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Prefill vs decode phases of Gemma 4 inference, with KV cache reuse across steps.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 19px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes grow{from{width:0}to{width:180px}}
+    .cache-grow rect.cache{animation:grow 3s ease-out both}
+    .step{fill:#fff;stroke:#151515;stroke-width:2.5}
+  </style>
+  <defs><marker id="ia" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">Prefill vs decode: why the first token feels slower</text>
+  <text x="58" y="96" class="tiny">Prefill processes the whole prompt at once and builds the KV cache. Decode appends one token at a time, reading from cache.</text>
+
+  <g transform="translate(58 140)">
+    <rect class="step" width="450" height="140" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="38" class="label">Prefill</text>
+    <text x="22" y="66" class="mono">runs all prompt tokens through every layer</text>
+    <text x="22" y="90" class="mono">cost = L * N * d^2  (N = prompt length)</text>
+    <text x="22" y="122" class="tiny">builds K, V tensors that decode will reuse</text>
+  </g>
+
+  <path class="flow" d="M508 210 C560 210 570 210 620 210" marker-end="url(#ia)"/>
+
+  <g transform="translate(620 140)">
+    <rect class="step" width="440" height="140" rx="16" fill="#e8f5dd"/>
+    <text x="22" y="38" class="label">Decode (step i)</text>
+    <text x="22" y="66" class="mono">only the newest token goes through attention</text>
+    <text x="22" y="90" class="mono">Q for 1 position, K/V read from cache</text>
+    <text x="22" y="122" class="tiny">per-step cost roughly linear in context length</text>
+  </g>
+
+  <g transform="translate(60 320)">
+    <text x="0" y="0" class="label">KV cache over time</text>
+  </g>
+
+  <g class="cache-grow" transform="translate(60 340)">
+    <rect class="cache" height="34" rx="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+  </g>
+  <text x="62" y="392" class="tiny">prompt tokens</text>
+
+  <g class="cache-grow" transform="translate(260 340)">
+    <rect class="cache" height="34" rx="8" fill="#fbf0f9" stroke="#151515" stroke-width="2" style="animation-delay:1s"/>
+  </g>
+  <text x="262" y="392" class="tiny">+ generated tokens</text>
+
+  <g transform="translate(60 420)">
+    <rect width="1000" height="95" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="mono">Cached state grows by 1 token per decode step, per layer that keeps full cache.</text>
+    <text x="22" y="62" class="mono">Sliding layers only keep the last W tokens, so their cache plateaus.</text>
+    <text x="22" y="86" class="mono">Global layers keep everything -> they dominate long-context memory.</text>
+  </g>
+</svg>
+</div>
+    <div class="calc">Cost sketch (L = layers, d = hidden, N = prompt length):
+
+Prefill total     ~ O(L * N * d^2)       [all N tokens * linear proj]
+Prefill attn     ~ O(L * N * W * d_h)   [each token reads window]
+Decode per step  ~ O(L * d^2 + L * N * d_h)   [1 new Q, cache read]
+
+-> For a 10K-token prompt and a short answer,
+   prefill can take longer than all decoding combined.
+-> Sliding windows make the N-dependent attention term
+   grow linearly, not quadratically.</div>
+    <div class="callout sticky"><strong>UX implication:</strong> Time-to-first-token is dominated by prefill. Tokens-per-second after that is dominated by decode + cache bandwidth. If you're seeing slow TTFT, shrink the prompt; if you're seeing slow streaming, profile bandwidth.</div>
+  </section>
+
+  <section class="sheet" id="tools">
+    <h2>Step 16 - Function calling: a loop, not a secret "agent module"</h2>
+    <p>Gemma 4 supports system-role prompting and function calling. Architecturally, the core model still predicts tokens. The difference is that instruction-tuned behavior and chat templates make the model produce structured text that a runtime can parse as a tool call, then append the tool result back into the conversation for the next decoding step.<sup><a href="#s1">1</a> <a href="#s7">7</a></sup></p>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Function calling loop in Gemma 4: schema, decode, tool call, observation, continue.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes orbit{to{transform:rotate(360deg)}}
+    .traveller{animation:none}
+  </style>
+  <defs><marker id="fa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">Function calling: a loop, not a secret agent module</text>
+  <text x="58" y="98" class="tiny">The model keeps predicting tokens. The runtime recognizes structured output, calls the tool, then appends the result to context.</text>
+
+  <g transform="translate(70 160)">
+    <rect width="180" height="100" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">1. Schema</text>
+    <text x="22" y="60" class="tiny">tool name, params,</text>
+    <text x="22" y="78" class="tiny">types, constraints</text>
+  </g>
+  <path class="flow" d="M250 210 C275 210 285 210 310 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(315 160)">
+    <rect width="180" height="100" rx="16" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">2. Decode</text>
+    <text x="22" y="60" class="tiny">model emits a</text>
+    <text x="22" y="78" class="tiny">structured call</text>
+  </g>
+  <path class="flow" d="M495 210 C520 210 535 210 560 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(565 160)">
+    <rect width="180" height="100" rx="16" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">3. Parse + call</text>
+    <text x="22" y="60" class="tiny">runtime validates,</text>
+    <text x="22" y="78" class="tiny">executes tool</text>
+  </g>
+  <path class="flow" d="M745 210 C770 210 785 210 810 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(815 160)">
+    <rect width="190" height="100" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">4. Observation</text>
+    <text x="22" y="60" class="tiny">tool result appended</text>
+    <text x="22" y="78" class="tiny">back into context</text>
+  </g>
+
+  <path class="flow" d="M905 260 C905 330 500 360 405 360" marker-end="url(#fa)"/>
+
+  <g transform="translate(215 340)">
+    <rect width="190" height="100" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="22" y="34" class="label">5. Continue</text>
+    <text x="22" y="60" class="tiny">next token decision</text>
+    <text x="22" y="78" class="tiny">now sees the answer</text>
+  </g>
+  <path class="flow" d="M215 390 C170 390 120 350 115 260" marker-end="url(#fa)"/>
+
+  <g transform="translate(440 370)">
+    <rect width="500" height="110" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">Core model still predicts tokens</text>
+    <text x="22" y="68" class="mono">No special "agent brain" - chat template + instruction tuning</text>
+    <text x="22" y="92" class="mono">are what make the output parse-able as a tool call.</text>
+  </g>
+</svg>
+</div>
+    <div class="three-col">
+      <div class="mini tan"><strong>1. Schema</strong><br>Give the model a tool name, fields, and constraints.</div>
+      <div class="mini blue"><strong>2. Decode</strong><br>The model emits a structured call instead of normal prose.</div>
+      <div class="mini soft"><strong>3. Continue</strong><br>The external result is inserted into context; the model reasons over it.</div>
+    </div>
+    <div class="calc">A single tool turn, on the wire:
+
+  [system]  You may call weather(city).
+  [user]    What's the weather in Paris?
+  [model]   &lt;tool_call&gt;weather(city="Paris")&lt;/tool_call&gt;
+  [runtime] parses, calls the function, gets "18C, clear"
+  [tool]    &lt;tool_result&gt;{"temp_c": 18, "sky": "clear"}&lt;/tool_result&gt;
+  [model]   "It's 18 C and clear in Paris."
+
+-> same autoregressive decode; the runtime is what makes the loop.</div>
+  </section>
+
+  <section class="sheet" id="use">
+    <h2>Step 17 - Which Gemma 4 should you use?</h2>
+    <div class="diagram-wrap" style="margin:18px 0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 620" role="img" aria-label="Decision tree for choosing which Gemma 4 model to use based on deployment target and modalities.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .edge{stroke:#151515;stroke-width:2.5;fill:none}
+    .edge-flow{stroke-dasharray:8 6;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-120}}
+    .node{stroke:#151515;stroke-width:2.5}
+  </style>
+  <rect x="24" y="24" width="1072" height="572" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">Which Gemma 4 should I pick?</text>
+  <text x="58" y="96" class="tiny">Smallest-fit rule: pick the smallest model that covers your modalities, context, and visual detail; move up only on real eval failures.</text>
+
+  <g transform="translate(450 130)">
+    <rect class="node" width="220" height="66" rx="16" fill="#fff7c9"/>
+    <text x="22" y="30" class="label">Need audio input?</text>
+    <text x="22" y="52" class="tiny">transcription / voice UX</text>
+  </g>
+
+  <path class="edge edge-flow" d="M470 200 C390 220 340 250 310 280"/>
+  <path class="edge edge-flow" d="M650 200 C730 220 780 250 810 280"/>
+  <text x="360" y="240" class="mono">YES</text>
+  <text x="740" y="240" class="mono">NO</text>
+
+  <g transform="translate(180 290)">
+    <rect class="node" width="260" height="66" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="30" class="label">Fit in &lt;8 GB memory?</text>
+    <text x="22" y="52" class="tiny">mobile, embedded, edge</text>
+  </g>
+  <path class="edge edge-flow" d="M230 360 C220 390 210 420 210 450"/>
+  <path class="edge edge-flow" d="M400 360 C410 390 420 420 420 450"/>
+  <text x="210" y="410" class="mono">YES</text>
+  <text x="430" y="410" class="mono">NO</text>
+
+  <g transform="translate(120 460)">
+    <rect class="node" width="180" height="66" rx="16" fill="#f8e7c9"/>
+    <text x="22" y="30" class="label">Gemma 4 E2B</text>
+    <text x="22" y="52" class="tiny">Q4 ~3.2 GB</text>
+  </g>
+
+  <g transform="translate(330 460)">
+    <rect class="node" width="180" height="66" rx="16" fill="#e8f5dd"/>
+    <text x="22" y="30" class="label">Gemma 4 E4B</text>
+    <text x="22" y="52" class="tiny">Q4 ~5 GB</text>
+  </g>
+
+  <g transform="translate(680 290)">
+    <rect class="node" width="300" height="66" rx="16" fill="#fbf0f9"/>
+    <text x="22" y="30" class="label">256K context needed?</text>
+    <text x="22" y="52" class="tiny">long docs, deep code reasoning</text>
+  </g>
+  <path class="edge edge-flow" d="M800 360 C790 390 770 420 760 450"/>
+  <path class="edge edge-flow" d="M880 360 C890 390 900 420 900 450"/>
+  <text x="760" y="410" class="mono">YES</text>
+  <text x="905" y="410" class="mono">NO</text>
+
+  <g transform="translate(650 460)">
+    <rect class="node" width="230" height="66" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="30" class="label">Compute budget?</text>
+    <text x="22" y="52" class="tiny">GPU memory ceiling</text>
+  </g>
+  <path class="edge edge-flow" d="M700 530 C680 550 660 560 640 570"/>
+  <path class="edge edge-flow" d="M830 530 C850 550 870 560 890 570"/>
+
+  <g transform="translate(500 555)">
+    <rect class="node" width="160" height="46" rx="14" fill="#f8e7c9"/>
+    <text x="16" y="30" class="label">26B A4B</text>
+  </g>
+
+  <g transform="translate(880 555)">
+    <rect class="node" width="160" height="46" rx="14" fill="#e8f5dd"/>
+    <text x="16" y="30" class="label">31B dense</text>
+  </g>
+
+  <g transform="translate(880 460)">
+    <rect class="node" width="160" height="66" rx="16" fill="#fff7c9"/>
+    <text x="16" y="30" class="label">26B A4B</text>
+    <text x="16" y="52" class="tiny">or 31B on GPU</text>
+  </g>
+</svg>
+</div>
+    <table>
+      <tr><th>Use case</th><th>Likely fit</th><th>Reason</th></tr>
+      <tr><td>Mobile app, offline assistant, speech-to-text workflow</td><td>E2B or E4B</td><td>Small models are aimed at edge/on-device use and include audio input.</td></tr>
+      <tr><td>Long document reasoning with lower per-token compute</td><td>26B A4B</td><td>256K context plus sparse active parameters.</td></tr>
+      <tr><td>Best dense quality on a workstation/server</td><td>31B</td><td>All parameters active; 60-layer dense stack; 256K context.</td></tr>
+      <tr><td>Vision-heavy document extraction</td><td>26B A4B or 31B</td><td>Larger vision encoder listed around 550M parameters and supports higher visual-token budgets.</td></tr>
+    </table>
+    <div class="callout sticky"><strong>The honest choice:</strong> start with the smallest model that preserves your needed modality, context length, and visual detail. Move up only when your eval set shows failures that are clearly capability failures, not prompting or retrieval failures.</div>
+  </section>
+
+  <section class="sheet">
+    <h2>Closing: what this means when you sit down to build</h2>
+    <p>If you remember only three things:</p>
+    <ul>
+      <li><strong>Hybrid attention</strong> is the reason 256K context fits anywhere useful. Most layers are cheap local readers; a few are expensive global readers. The cache math follows from that.</li>
+      <li><strong>MoE is not "a small model".</strong> The 26B A4B stores 25.2B parameters and activates 3.8B per token. Compute behaves like the active size; memory behaves like the stored size.</li>
+      <li><strong>Modalities meet in the decoder.</strong> Text, image, and (on E2B/E4B) audio all become tokens in one sequence. Function calls are just structured tokens the runtime intercepts.</li>
+    </ul>
+    <p class="small muted">All numbers quoted here are from public docs and configs. Exact behavior at training time is not public; the model card calls out that architectural choices like hybrid attention, PLE, and MoE routing apply, but individual hyperparameters can differ between the public config and the internal training recipe.</p>
+  </section>
+
+  <section class="sheet end" id="sources">
+    <h2>Endnotes and source anchors</h2>
+    <ol class="source-list">
+      <li id="s1"><a href="https://ai.google.dev/gemma/docs/core/model_card_4">Google AI for Developers - Gemma 4 model card</a>. Used for model family, dense/MoE sizes, context lengths, layers, vocabulary, modalities, hybrid attention, PLE, active experts, benchmarks, and capability claims.</li>
+      <li id="s2"><a href="https://ai.google.dev/gemma/docs/core">Google AI for Developers - Gemma model overview</a>. Used for parameter sizes, quantization, and approximate inference memory requirements.</li>
+      <li id="s3"><a href="https://github.com/huggingface/transformers/blob/main/docs/source/en/model_doc/gemma4.md">Hugging Face Transformers - Gemma 4 docs</a>. Used for vision token budgets, patch/pooling constraints, 2D position information, and PLE implementation notes.</li>
+      <li id="s4"><a href="https://ai.google.dev/gemma/docs/capabilities/vision">Google AI for Developers - Gemma vision understanding</a>. Used for variable-resolution visual token budget guidance.</li>
+      <li id="s5"><a href="https://huggingface.co/google/gemma-4-31B/blob/main/config.json">Hugging Face - google/gemma-4-31B config.json</a>. Used for public 31B hyperparameters in the KV-cache teaching calculation: heads, KV heads, layer pattern, RoPE settings, and vision config.</li>
+      <li id="s6"><a href="https://keras.io/keras_hub/api/models/gemma4/gemma4_backbone/">Keras Hub - Gemma4Backbone</a>. Used for implementation-level notes: four norms per decoder block, Q/K/V normalization, attention scaling, sliding-window pattern, vision bidirectional attention, and MoE constructor fields.</li>
+      <li id="s7"><a href="https://developers.googleblog.com/en/bring-state-of-the-art-agentic-skills-to-the-edge-with-gemma-4/">Google Developers Blog - Gemma 4 edge and agentic skills</a>. Used for release timing, edge deployment framing, function/tool-use context, LiteRT-LM, and on-device claims.</li>
+      <li id="s8"><a href="https://arxiv.org/abs/1706.03762">Vaswani et al., Attention Is All You Need</a>. Original Transformer architecture reference.</li>
+      <li id="s9"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer: Enhanced Transformer with Rotary Position Embedding</a>. Original RoPE reference.</li>
+      <li id="s10"><a href="https://arxiv.org/abs/2305.13245">Ainslie et al., GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints</a>. Grouped-query attention reference.</li>
+      <li id="s11"><a href="https://arxiv.org/abs/1701.06538">Shazeer et al., Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a>. Sparse MoE reference.</li>
+    </ol>
+  </section>
+</article>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Prefill vs decode phases of Gemma 4 inference, with KV cache reuse across steps.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 19px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes grow{from{width:0}to{width:180px}}
+    .cache-grow rect.cache{animation:grow 3s ease-out both}
+    .step{fill:#fff;stroke:#151515;stroke-width:2.5}
+  </style>
+  <defs><marker id="ia" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">Prefill vs decode: why the first token feels slower</text>
+  <text x="58" y="96" class="tiny">Prefill processes the whole prompt at once and builds the KV cache. Decode appends one token at a time, reading from cache.</text>
+
+  <g transform="translate(58 140)">
+    <rect class="step" width="450" height="140" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="38" class="label">Prefill</text>
+    <text x="22" y="66" class="mono">runs all prompt tokens through every layer</text>
+    <text x="22" y="90" class="mono">cost = L * N * d^2  (N = prompt length)</text>
+    <text x="22" y="122" class="tiny">builds K, V tensors that decode will reuse</text>
+  </g>
+
+  <path class="flow" d="M508 210 C560 210 570 210 620 210" marker-end="url(#ia)"/>
+
+  <g transform="translate(620 140)">
+    <rect class="step" width="440" height="140" rx="16" fill="#e8f5dd"/>
+    <text x="22" y="38" class="label">Decode (step i)</text>
+    <text x="22" y="66" class="mono">only the newest token goes through attention</text>
+    <text x="22" y="90" class="mono">Q for 1 position, K/V read from cache</text>
+    <text x="22" y="122" class="tiny">per-step cost roughly linear in context length</text>
+  </g>
+
+  <g transform="translate(60 320)">
+    <text x="0" y="0" class="label">KV cache over time</text>
+  </g>
+
+  <g class="cache-grow" transform="translate(60 340)">
+    <rect class="cache" height="34" rx="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+  </g>
+  <text x="62" y="392" class="tiny">prompt tokens</text>
+
+  <g class="cache-grow" transform="translate(260 340)">
+    <rect class="cache" height="34" rx="8" fill="#fbf0f9" stroke="#151515" stroke-width="2" style="animation-delay:1s"/>
+  </g>
+  <text x="262" y="392" class="tiny">+ generated tokens</text>
+
+  <g transform="translate(60 420)">
+    <rect width="1000" height="95" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="mono">Cached state grows by 1 token per decode step, per layer that keeps full cache.</text>
+    <text x="22" y="62" class="mono">Sliding layers only keep the last W tokens, so their cache plateaus.</text>
+    <text x="22" y="86" class="mono">Global layers keep everything -> they dominate long-context memory.</text>
+  </g>
+</svg>

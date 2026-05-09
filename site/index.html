@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma 4, drawn out - a handwritten architecture guide</title>
+<meta name="description" content="A source-backed, visual explainer of the Gemma 4 architecture: hybrid attention, GQA, MoE, PLE, RoPE, KV cache math, vision and audio tokens, function calling, and quantization.">
+<meta property="og:title" content="Gemma 4, drawn out">
+<meta property="og:description" content="A handwritten architecture guide with animated diagrams, calculations, and citations.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="sitehead">
+  <span class="brand">gemma 4, drawn out.</span>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="article.html">Read</a>
+    <a href="notebook.html">Notebook</a>
+    <a href="assets.html">Assets</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="sheet">
+    <span class="kicker">Handwritten architecture guide</span>
+    <h1>Gemma 4, drawn out.</h1>
+    <p class="lede">Most model announcements hand you a table and a handful of benchmark numbers. This guide treats Gemma 4 like a system on a whiteboard: where tokens enter, how image patches become soft tokens, how audio joins the sequence on the edge models, and what "26B A4B" really means when a single token is being processed.</p>
+    <p class="lede"><strong>17 steps, every step illustrated, every step has numbers you can check.</strong> Published as a Substack-style long read, a runnable notebook, and a reusable asset pack.</p>
+    <div style="margin:22px 0">
+      <span class="tag">hybrid attention</span>
+      <span class="tag">GQA</span>
+      <span class="tag">MoE 26B A4B</span>
+      <span class="tag">PLE</span>
+      <span class="tag">RoPE / p-RoPE</span>
+      <span class="tag">vision tokens</span>
+      <span class="tag">audio on E2B/E4B</span>
+      <span class="tag">KV cache math</span>
+      <span class="tag">quantization</span>
+      <span class="tag">function calling</span>
+    </div>
+    <div class="nav-grid">
+      <a class="nav-card" href="article.html">
+        <strong>Read the article</strong>
+        17 illustrated steps, animated SVG diagrams, per-step worked calculations.
+        <span class="pill">HTML</span><span class="pill">Substack-ready</span>
+      </a>
+      <a class="nav-card" href="notebook.html">
+        <strong>Open the notebook</strong>
+        Jupyter companion with the same figures plus runnable code cells.
+        <span class="pill">Jupyter</span><span class="pill">Python</span>
+      </a>
+      <a class="nav-card" href="assets.html">
+        <strong>Browse the diagrams</strong>
+        15 standalone SVGs you can reuse in slides, blogs, or docs.
+        <span class="pill">SVG</span><span class="pill">PNG</span><span class="pill">CC-reusable</span>
+      </a>
+      <a class="nav-card" href="about.html">
+        <strong>How this was made</strong>
+        Source list, methodology, and a note on what is public vs inferred.
+        <span class="pill">Citations</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <h2>What you'll learn</h2>
+    <div class="nav-grid">
+      <div class="nav-card"><strong>1-4. The machine</strong>Model family, one-screen data flow, tokenizer, decoder block anatomy.</div>
+      <div class="nav-card"><strong>5-9. Attention</strong>Hybrid local/global, GQA heads, the 60-layer rhythm, KV cache math, RoPE / p-RoPE.</div>
+      <div class="nav-card"><strong>10-12. Modalities</strong>Vision token budgets, audio on edge, MoE routing in 26B A4B.</div>
+      <div class="nav-card"><strong>13-15. Deployment</strong>PLE detail, quantization budgets, prefill vs decode cost.</div>
+      <div class="nav-card"><strong>16-17. Using it</strong>Function-calling loop, decision tree for picking the right model.</div>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <h2>The short version</h2>
+    <p><strong>Gemma 4 is a family, not one model.</strong> Four public sizes: E2B, E4B, 26B A4B, 31B. The edge models (E2B/E4B) add audio. The 26B A4B is the sparse MoE member - 25.2B stored parameters, ~3.8B active per token. Hybrid attention is what keeps the 256K context window tractable - most layers read only a window, a few read the full context, and the final layer is always global.</p>
+    <div class="callout sticky"><strong>Honest starting point:</strong> pick the smallest model that preserves your needed modality, context length, and visual detail. Move up only when your eval set shows capability failures, not prompting failures.</div>
+  </section>
+</main>
+
+<footer class="sitefoot">
+  Built with public docs and configs. No training-time secrets claimed.<br>
+  <a href="article.html" style="color:var(--ink);font-weight:800">Start reading</a> or
+  <a href="downloads/" style="color:var(--ink);font-weight:800">download the package</a>.
+</footer>
+</body>
+</html>

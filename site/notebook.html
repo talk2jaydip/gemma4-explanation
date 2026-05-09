@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notebook companion - Gemma 4, drawn out</title>
+<meta name="description" content="Jupyter notebook companion to the Gemma 4 architecture guide, with runnable calculations.">
+<link rel="stylesheet" href="styles.css">
+<style>
+.nb-frame{width:100%;height:80vh;min-height:700px;border:3px solid #151515;border-radius:20px;background:#fffaf0;box-shadow:8px 8px 0 #d4c7ad}
+.nb-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.nb-actions a{border:2px solid #151515;border-radius:999px;background:#fff;padding:8px 14px;text-decoration:none;color:#151515;font-weight:800;box-shadow:3px 3px 0 #d4c7ad}
+.nb-actions a.primary{background:#f8e7c9}
+</style>
+</head>
+<body>
+<header class="sitehead">
+  <span class="brand"><a href="index.html" style="text-decoration:none;color:inherit;border:none;background:transparent;box-shadow:none;padding:0">gemma 4, drawn out.</a></span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="article.html">Read</a>
+    <a href="notebook.html" class="active">Notebook</a>
+    <a href="assets.html">Assets</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="sheet">
+    <span class="kicker">Jupyter companion</span>
+    <h1>Notebook companion</h1>
+    <p class="lede">Same architecture, same figures, this time with runnable Python. Every calculation in the article corresponds to a code cell you can open and re-run.</p>
+    <div class="nb-actions">
+      <a class="primary" href="downloads/gemma4_architecture_explainer_notebook_v2.ipynb" download>Download .ipynb</a>
+      <a href="notebook_raw.html" target="_blank">Open full render in new tab</a>
+      <a href="https://colab.research.google.com/" target="_blank" rel="noopener">Run on Colab (upload the file)</a>
+    </div>
+    <iframe class="nb-frame" src="notebook_raw.html" title="Rendered notebook"></iframe>
+    <p class="small muted" style="margin-top:14px">The embed above is a static render. Download the .ipynb to run it locally with Python 3.11+, pandas, matplotlib, and numpy.</p>
+  </section>
+
+  <section class="sheet">
+    <h2>What the notebook covers</h2>
+    <div class="nav-grid">
+      <div class="nav-card"><strong>Model family table</strong>Effective vs total parameters across E2B, E4B, 26B A4B, 31B.</div>
+      <div class="nav-card"><strong>Active-parameter ratio</strong>The 3.8B/25.2B = 15.1% active calculation for MoE.</div>
+      <div class="nav-card"><strong>Attention score growth</strong>Full N^2 vs sliding N*W at 256K context.</div>
+      <div class="nav-card"><strong>GQA cache savings</strong>KV bytes per token per layer under MHA vs GQA.</div>
+      <div class="nav-card"><strong>31B KV cache split</strong>Local-vs-global memory share under the 5:1 pattern.</div>
+      <div class="nav-card"><strong>PLE variance check</strong>Why the 1/sqrt(2) scaling preserves unit variance.</div>
+      <div class="nav-card"><strong>Quantization table</strong>BF16/SFP8/Q4 memory across the family.</div>
+      <div class="nav-card"><strong>Audio token budget</strong>~750 tokens for a 30-second clip.</div>
+      <div class="nav-card"><strong>Prefill vs decode cost</strong>When TTFT dominates and when bandwidth does.</div>
+      <div class="nav-card"><strong>Vision token budget</strong>Patches, 3x3 pooling, the 280-token worked example.</div>
+      <div class="nav-card"><strong>Function-calling turn</strong>A tool-call transcript you can read top-to-bottom.</div>
+      <div class="nav-card"><strong>Model decision tree</strong>Summary table of which model for which use case.</div>
+    </div>
+  </section>
+</main>
+
+<footer class="sitefoot">
+  <a href="index.html" style="color:#151515;font-weight:800">Home</a> -
+  <a href="article.html" style="color:#151515;font-weight:800">Article</a> -
+  <a href="assets.html" style="color:#151515;font-weight:800">Assets</a>
+</footer>
+</body>
+</html>

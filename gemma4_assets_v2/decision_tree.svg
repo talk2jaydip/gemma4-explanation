@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 620" role="img" aria-label="Decision tree for choosing which Gemma 4 model to use based on deployment target and modalities.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .edge{stroke:#151515;stroke-width:2.5;fill:none}
+    .edge-flow{stroke-dasharray:8 6;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-120}}
+    .node{stroke:#151515;stroke-width:2.5}
+  </style>
+  <rect x="24" y="24" width="1072" height="572" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">Which Gemma 4 should I pick?</text>
+  <text x="58" y="96" class="tiny">Smallest-fit rule: pick the smallest model that covers your modalities, context, and visual detail; move up only on real eval failures.</text>
+
+  <g transform="translate(450 130)">
+    <rect class="node" width="220" height="66" rx="16" fill="#fff7c9"/>
+    <text x="22" y="30" class="label">Need audio input?</text>
+    <text x="22" y="52" class="tiny">transcription / voice UX</text>
+  </g>
+
+  <path class="edge edge-flow" d="M470 200 C390 220 340 250 310 280"/>
+  <path class="edge edge-flow" d="M650 200 C730 220 780 250 810 280"/>
+  <text x="360" y="240" class="mono">YES</text>
+  <text x="740" y="240" class="mono">NO</text>
+
+  <g transform="translate(180 290)">
+    <rect class="node" width="260" height="66" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="30" class="label">Fit in &lt;8 GB memory?</text>
+    <text x="22" y="52" class="tiny">mobile, embedded, edge</text>
+  </g>
+  <path class="edge edge-flow" d="M230 360 C220 390 210 420 210 450"/>
+  <path class="edge edge-flow" d="M400 360 C410 390 420 420 420 450"/>
+  <text x="210" y="410" class="mono">YES</text>
+  <text x="430" y="410" class="mono">NO</text>
+
+  <g transform="translate(120 460)">
+    <rect class="node" width="180" height="66" rx="16" fill="#f8e7c9"/>
+    <text x="22" y="30" class="label">Gemma 4 E2B</text>
+    <text x="22" y="52" class="tiny">Q4 ~3.2 GB</text>
+  </g>
+
+  <g transform="translate(330 460)">
+    <rect class="node" width="180" height="66" rx="16" fill="#e8f5dd"/>
+    <text x="22" y="30" class="label">Gemma 4 E4B</text>
+    <text x="22" y="52" class="tiny">Q4 ~5 GB</text>
+  </g>
+
+  <g transform="translate(680 290)">
+    <rect class="node" width="300" height="66" rx="16" fill="#fbf0f9"/>
+    <text x="22" y="30" class="label">256K context needed?</text>
+    <text x="22" y="52" class="tiny">long docs, deep code reasoning</text>
+  </g>
+  <path class="edge edge-flow" d="M800 360 C790 390 770 420 760 450"/>
+  <path class="edge edge-flow" d="M880 360 C890 390 900 420 900 450"/>
+  <text x="760" y="410" class="mono">YES</text>
+  <text x="905" y="410" class="mono">NO</text>
+
+  <g transform="translate(650 460)">
+    <rect class="node" width="230" height="66" rx="16" fill="#e2f1ff"/>
+    <text x="22" y="30" class="label">Compute budget?</text>
+    <text x="22" y="52" class="tiny">GPU memory ceiling</text>
+  </g>
+  <path class="edge edge-flow" d="M700 530 C680 550 660 560 640 570"/>
+  <path class="edge edge-flow" d="M830 530 C850 550 870 560 890 570"/>
+
+  <g transform="translate(500 555)">
+    <rect class="node" width="160" height="46" rx="14" fill="#f8e7c9"/>
+    <text x="16" y="30" class="label">26B A4B</text>
+  </g>
+
+  <g transform="translate(880 555)">
+    <rect class="node" width="160" height="46" rx="14" fill="#e8f5dd"/>
+    <text x="16" y="30" class="label">31B dense</text>
+  </g>
+
+  <g transform="translate(880 460)">
+    <rect class="node" width="160" height="66" rx="16" fill="#fff7c9"/>
+    <text x="16" y="30" class="label">26B A4B</text>
+    <text x="16" y="52" class="tiny">or 31B on GPU</text>
+  </g>
+</svg>

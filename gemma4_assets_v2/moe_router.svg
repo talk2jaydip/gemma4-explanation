@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Mixture of experts routing in Gemma 4 26B A4B.">
+  <defs><marker id="arrow4" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="72" class="scribble title">MoE: a 26B library, about 3.8B active per token</text>
+  <text x="58" y="104" class="note">A router scores experts, opens a small set, and combines their answers with the shared path.</text>
+
+  <g transform="translate(70 220)">
+    <rect width="135" height="86" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="32" y="35" class="label">token</text>
+    <text x="20" y="62" class="tiny">hidden vector</text>
+  </g>
+  <path class="flow" d="M205 263 C260 263 280 263 330 263" marker-end="url(#arrow4)"/>
+  <g transform="translate(340 200)">
+    <rect width="160" height="125" rx="18" fill="#fff" stroke="#151515" stroke-width="2.6"/>
+    <text x="35" y="38" class="label">router</text>
+    <text x="20" y="70" class="tiny">top 8 experts</text>
+    <text x="20" y="92" class="tiny">+ shared expert</text>
+    <circle class="pulse-dot" cx="126" cy="35" r="8" fill="#151515"/>
+  </g>
+
+  <path class="flow" d="M500 263 C548 245 562 228 612 208" marker-end="url(#arrow4)"/>
+  <path class="flow" d="M500 263 C548 263 562 263 612 263" marker-end="url(#arrow4)"/>
+  <path class="flow" d="M500 263 C548 285 562 304 612 324" marker-end="url(#arrow4)"/>
+
+  <g transform="translate(620 140)">
+    <text x="0" y="-18" class="label">128 total expert blocks</text>
+    <g class="experts">
+      <rect class="expert active" x="0" y="0" width="52" height="38" rx="8"/><rect class="expert" x="62" y="0" width="52" height="38" rx="8"/><rect class="expert" x="124" y="0" width="52" height="38" rx="8"/><rect class="expert active" x="186" y="0" width="52" height="38" rx="8"/><rect class="expert" x="248" y="0" width="52" height="38" rx="8"/>
+      <rect class="expert" x="0" y="50" width="52" height="38" rx="8"/><rect class="expert active" x="62" y="50" width="52" height="38" rx="8"/><rect class="expert" x="124" y="50" width="52" height="38" rx="8"/><rect class="expert" x="186" y="50" width="52" height="38" rx="8"/><rect class="expert active" x="248" y="50" width="52" height="38" rx="8"/>
+      <rect class="expert active" x="0" y="100" width="52" height="38" rx="8"/><rect class="expert" x="62" y="100" width="52" height="38" rx="8"/><rect class="expert" x="124" y="100" width="52" height="38" rx="8"/><rect class="expert active" x="186" y="100" width="52" height="38" rx="8"/><rect class="expert" x="248" y="100" width="52" height="38" rx="8"/>
+      <rect class="expert" x="0" y="150" width="52" height="38" rx="8"/><rect class="expert active" x="62" y="150" width="52" height="38" rx="8"/><rect class="expert" x="124" y="150" width="52" height="38" rx="8"/><rect class="expert" x="186" y="150" width="52" height="38" rx="8"/><rect class="expert active" x="248" y="150" width="52" height="38" rx="8"/>
+    </g>
+  </g>
+
+  <g transform="translate(950 220)">
+    <rect width="95" height="95" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.6"/>
+    <text x="22" y="37" class="label">mix</text>
+    <text x="15" y="62" class="tiny">weighted</text>
+    <text x="15" y="80" class="tiny">sum</text>
+  </g>
+  <path class="flow" d="M920 262 C930 262 938 262 950 262" marker-end="url(#arrow4)"/>
+
+  <g transform="translate(72 430)">
+    <rect width="975" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">3.8B / 25.2B = 15.1% of parameters active for a token, before runtime overheads.</text>
+  </g>
+</svg>

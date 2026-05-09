@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Rotary position embedding sketch.">
+  <defs><marker id="arrow5" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">RoPE: position as rotation, not a glued-on number</text>
+  <text x="58" y="106" class="note">A vector pair is rotated by an angle tied to its position. Dot products then carry relative distance information.</text>
+
+  <g transform="translate(245 280)">
+    <circle cx="0" cy="0" r="145" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <line x1="-165" y1="0" x2="165" y2="0" stroke="#151515" stroke-width="2"/>
+    <line x1="0" y1="165" x2="0" y2="-165" stroke="#151515" stroke-width="2"/>
+    <path class="arc a1" d="M90 -80 A120 120 0 0 1 142 25" fill="none" stroke="#151515" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <line x1="0" y1="0" x2="105" y2="-75" stroke="#151515" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <line class="rotvec" x1="0" y1="0" x2="135" y2="35" stroke="#151515" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow5)"/>
+    <text x="-70" y="205" class="tiny">same content vector, turned by position</text>
+  </g>
+
+  <g transform="translate(520 170)">
+    <rect width="485" height="220" rx="20" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="46" class="label">In a text layer</text>
+    <text x="26" y="79" class="tiny">Q and K are rotated before attention.</text>
+    <text x="26" y="112" class="label">In a global Gemma 4 layer</text>
+    <text x="26" y="145" class="tiny">public config uses proportional RoPE and partial rotation.</text>
+    <text x="26" y="178" class="label">In the vision encoder</text>
+    <text x="26" y="211" class="tiny">2D position handles x and y direction separately.</text>
+  </g>
+</svg>

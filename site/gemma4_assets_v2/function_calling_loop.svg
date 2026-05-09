@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Function calling loop in Gemma 4: schema, decode, tool call, observation, continue.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes orbit{to{transform:rotate(360deg)}}
+    .traveller{animation:none}
+  </style>
+  <defs><marker id="fa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">Function calling: a loop, not a secret agent module</text>
+  <text x="58" y="98" class="tiny">The model keeps predicting tokens. The runtime recognizes structured output, calls the tool, then appends the result to context.</text>
+
+  <g transform="translate(70 160)">
+    <rect width="180" height="100" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">1. Schema</text>
+    <text x="22" y="60" class="tiny">tool name, params,</text>
+    <text x="22" y="78" class="tiny">types, constraints</text>
+  </g>
+  <path class="flow" d="M250 210 C275 210 285 210 310 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(315 160)">
+    <rect width="180" height="100" rx="16" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">2. Decode</text>
+    <text x="22" y="60" class="tiny">model emits a</text>
+    <text x="22" y="78" class="tiny">structured call</text>
+  </g>
+  <path class="flow" d="M495 210 C520 210 535 210 560 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(565 160)">
+    <rect width="180" height="100" rx="16" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">3. Parse + call</text>
+    <text x="22" y="60" class="tiny">runtime validates,</text>
+    <text x="22" y="78" class="tiny">executes tool</text>
+  </g>
+  <path class="flow" d="M745 210 C770 210 785 210 810 210" marker-end="url(#fa)"/>
+
+  <g transform="translate(815 160)">
+    <rect width="190" height="100" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">4. Observation</text>
+    <text x="22" y="60" class="tiny">tool result appended</text>
+    <text x="22" y="78" class="tiny">back into context</text>
+  </g>
+
+  <path class="flow" d="M905 260 C905 330 500 360 405 360" marker-end="url(#fa)"/>
+
+  <g transform="translate(215 340)">
+    <rect width="190" height="100" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="22" y="34" class="label">5. Continue</text>
+    <text x="22" y="60" class="tiny">next token decision</text>
+    <text x="22" y="78" class="tiny">now sees the answer</text>
+  </g>
+  <path class="flow" d="M215 390 C170 390 120 350 115 260" marker-end="url(#fa)"/>
+
+  <g transform="translate(440 370)">
+    <rect width="500" height="110" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">Core model still predicts tokens</text>
+    <text x="22" y="68" class="mono">No special "agent brain" - chat template + instruction tuning</text>
+    <text x="22" y="92" class="mono">are what make the output parse-able as a tool call.</text>
+  </g>
+</svg>

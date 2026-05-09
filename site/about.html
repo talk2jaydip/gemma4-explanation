@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About - Gemma 4, drawn out</title>
+<meta name="description" content="How the Gemma 4 explainer was built: sources, methodology, and what is public vs inferred.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="sitehead">
+  <span class="brand"><a href="index.html" style="text-decoration:none;color:inherit;border:none;background:transparent;box-shadow:none;padding:0">gemma 4, drawn out.</a></span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="article.html">Read</a>
+    <a href="notebook.html">Notebook</a>
+    <a href="assets.html">Assets</a>
+    <a href="about.html" class="active">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="sheet">
+    <span class="kicker">Methodology</span>
+    <h1>About this explainer</h1>
+    <p class="lede">Every architectural claim in this guide is anchored to a public source - Google's Gemma 4 model card, Google's vision docs, the Hugging Face Transformers docs, the public 31B config, the Keras Hub Gemma4Backbone, or foundational papers.</p>
+    <p>Where the public record is ambiguous (for example, whether internal training recipes match the public config byte-for-byte), the article says so explicitly. The goal is an honest, source-backed mental model - not a marketing summary and not a reverse-engineering claim.</p>
+  </section>
+
+  <section class="sheet">
+    <h2>Primary sources</h2>
+    <ol style="padding-left:22px;line-height:2">
+      <li><a href="https://ai.google.dev/gemma/docs/core/model_card_4">Gemma 4 model card</a> - family, sizes, context lengths, layers, vocabulary, modalities, hybrid attention, PLE, active experts.</li>
+      <li><a href="https://ai.google.dev/gemma/docs/core">Gemma model overview</a> - parameter sizes, quantization, approximate inference memory.</li>
+      <li><a href="https://github.com/huggingface/transformers/blob/main/docs/source/en/model_doc/gemma4.md">Hugging Face Transformers Gemma 4 docs</a> - vision token budgets, 2D position, PLE implementation notes.</li>
+      <li><a href="https://ai.google.dev/gemma/docs/capabilities/vision">Gemma vision docs</a> - variable-resolution budget guidance.</li>
+      <li><a href="https://huggingface.co/google/gemma-4-31B/blob/main/config.json">Gemma 4 31B config.json</a> - heads, KV heads, layer pattern, RoPE settings.</li>
+      <li><a href="https://keras.io/keras_hub/api/models/gemma4/gemma4_backbone/">Keras Hub Gemma4Backbone</a> - norms, Q/K/V normalization, sliding-window pattern, MoE constructor fields.</li>
+      <li><a href="https://developers.googleblog.com/en/bring-state-of-the-art-agentic-skills-to-the-edge-with-gemma-4/">Google Developers Blog - Gemma 4 edge / agentic</a> - release timing, edge framing, function-use.</li>
+    </ol>
+    <h3>Foundational papers referenced</h3>
+    <ul style="padding-left:22px;line-height:2">
+      <li><a href="https://arxiv.org/abs/1706.03762">Vaswani et al. - Attention Is All You Need</a></li>
+      <li><a href="https://arxiv.org/abs/2104.09864">Su et al. - RoFormer (RoPE)</a></li>
+      <li><a href="https://arxiv.org/abs/2305.13245">Ainslie et al. - GQA</a></li>
+      <li><a href="https://arxiv.org/abs/1701.06538">Shazeer et al. - Sparsely-Gated MoE</a></li>
+    </ul>
+  </section>
+
+  <section class="sheet">
+    <h2>What the numbers mean</h2>
+    <p>The KV-cache estimate in section 8 is a <em>teaching calculation</em>. It uses public 31B config values (60 layers, 32 Q heads, 16 local KV heads, 4 global KV heads, 256 local head_dim, 512 global head_dim), BF16, batch 1, and assumes a compact rolling buffer for sliding layers. Real engines differ because of paged attention, quantized KV, padding, batching, and allocator overhead. Your production numbers will vary - the point is the <em>ratio</em>, not the exact GiB.</p>
+    <div class="callout sticky"><strong>If you find an error:</strong> please file an issue at the project repo or reply on the Substack post. I'd rather update this and be right than leave a stale number up.</div>
+  </section>
+
+
+
+  <section class="sheet">
+    <h2>Downloads</h2>
+    <div class="nav-grid">
+      <a class="nav-card" href="downloads/gemma4_architecture_explainer_notebook_v2.ipynb" download>
+        <strong>Notebook (.ipynb)</strong>Jupyter companion, 51 cells.
+      </a>
+      <a class="nav-card" href="article.html">
+        <strong>Article (HTML)</strong>Full standalone long-read.
+      </a>
+      <a class="nav-card" href="assets.html">
+        <strong>Diagrams</strong>15 SVG figures + PNG exports.
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="sitefoot">
+  <a href="index.html" style="color:#151515;font-weight:800">Home</a>
+</footer>
+</body>
+</html>

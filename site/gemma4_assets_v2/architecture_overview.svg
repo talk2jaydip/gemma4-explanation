@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Gemma 4 architecture overview: text, vision and audio tokens enter encoders, merge into a decoder stack, and produce text or tool calls.">
+  <defs>
+    <filter id="paperShadow" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="4" dy="5" stdDeviation="0" flood-color="#d4c7ad" flood-opacity="0.95"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#151515"/>
+    </marker>
+  </defs>
+  <rect x="20" y="20" width="1080" height="520" rx="28" fill="#fffaf0" stroke="#151515" stroke-width="3" filter="url(#paperShadow)"/>
+  <text x="56" y="64" class="scribble title">One screen mental model</text>
+  <text x="56" y="92" class="note">Everything becomes a token-like vector, then the decoder keeps rewriting the sequence.</text>
+
+  <g class="card" transform="translate(60 135)">
+    <rect width="180" height="82" rx="16" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">text prompt</text>
+    <text x="22" y="58" class="tiny">262K vocab ids</text>
+  </g>
+  <g class="card" transform="translate(60 260)">
+    <rect width="180" height="82" rx="16" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">image</text>
+    <text x="22" y="58" class="tiny">variable token budget</text>
+  </g>
+  <g class="card" transform="translate(60 385)">
+    <rect width="180" height="82" rx="16" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">audio</text>
+    <text x="22" y="58" class="tiny">E2B/E4B only</text>
+  </g>
+
+  <g class="card" transform="translate(330 130)">
+    <rect width="225" height="95" rx="18" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">token embedding</text>
+    <text x="22" y="58" class="tiny">scaled lookup</text>
+    <text x="22" y="77" class="tiny">+ PLE on edge models</text>
+  </g>
+  <g class="card" transform="translate(330 275)">
+    <rect width="225" height="105" rx="18" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">vision encoder</text>
+    <text x="22" y="58" class="tiny">16px patches</text>
+    <text x="22" y="78" class="tiny">3x3 pooling</text>
+  </g>
+
+  <g class="stack" transform="translate(650 105)">
+    <rect x="0" y="250" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="190" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="130" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="70" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <rect x="0" y="10" width="270" height="76" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.2"/>
+    <text x="20" y="45" class="label">RMSNorm</text>
+    <text x="128" y="45" class="label">attention</text>
+    <text x="20" y="105" class="label">local window</text>
+    <text x="20" y="165" class="label">full/global layer</text>
+    <text x="20" y="225" class="label">MLP or MoE</text>
+    <text x="20" y="287" class="label">residual stream</text>
+    <text x="20" y="350" class="scribble small">repeat 30 to 60 layers</text>
+  </g>
+
+  <g class="card" transform="translate(970 210)">
+    <rect width="100" height="95" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="19" y="34" class="label">logits</text>
+    <text x="18" y="62" class="tiny">next token</text>
+    <text x="18" y="80" class="tiny">or tool call</text>
+  </g>
+
+  <path class="flow" d="M240 176 C285 176 295 176 330 176" marker-end="url(#arrow)"/>
+  <path class="flow" d="M240 301 C292 303 300 324 330 324" marker-end="url(#arrow)"/>
+  <path class="flow" d="M240 426 C286 422 294 347 330 340" marker-end="url(#arrow)"/>
+  <path class="flow" d="M555 175 C602 175 607 166 650 166" marker-end="url(#arrow)"/>
+  <path class="flow" d="M555 327 C612 314 617 280 650 258" marker-end="url(#arrow)"/>
+  <path class="flow" d="M920 257 C945 257 952 257 970 257" marker-end="url(#arrow)"/>
+
+  <circle class="traveller" r="8" fill="#151515">
+    <animateMotion dur="7s" repeatCount="indefinite" path="M240 176 C285 176 295 176 330 176 C410 176 510 176 555 175 C602 175 607 166 650 166 C785 166 855 218 920 257 C945 257 952 257 970 257"/>
+  </circle>
+  <circle class="traveller light" r="7" fill="#f8e7c9">
+    <animateMotion dur="8.5s" begin="1s" repeatCount="indefinite" path="M240 301 C292 303 300 324 330 324 C420 324 520 327 555 327 C612 314 617 280 650 258 C800 250 870 252 970 257"/>
+  </circle>
+</svg>

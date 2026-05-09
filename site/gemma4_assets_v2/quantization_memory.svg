@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Approximate weight memory of Gemma 4 models at BF16, SFP8, and Q4.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 18px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 14px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .bar{stroke:#151515;stroke-width:2.2;transform-origin:left center}
+    .grow{animation:grow 1.6s ease-out both}
+    @keyframes grow{from{transform:scaleX(.02)}to{transform:scaleX(1)}}
+  </style>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">Weight memory per model: BF16 vs SFP8 vs Q4</text>
+  <text x="58" y="98" class="tiny">Approximate inference weight memory from Google's overview. Real runtime adds KV cache, activations, and framework overhead.</text>
+
+  <g transform="translate(70 150)">
+    <text x="0" y="0" class="label">E2B</text>
+    <rect class="bar grow" x="120" y="-20" width="20" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="10" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="6" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="150" y="-2" class="mono">BF16 ~10 GB</text>
+    <text x="150" y="26" class="mono">SFP8 ~5 GB</text>
+    <text x="150" y="54" class="mono">Q4 ~3.2 GB</text>
+  </g>
+
+  <g transform="translate(70 240)">
+    <text x="0" y="0" class="label">E4B</text>
+    <rect class="bar grow" x="120" y="-20" width="32" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="16" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="10" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="170" y="-2" class="mono">BF16 ~16 GB</text>
+    <text x="170" y="26" class="mono">SFP8 ~8 GB</text>
+    <text x="170" y="54" class="mono">Q4 ~5 GB</text>
+  </g>
+
+  <g transform="translate(70 330)">
+    <text x="0" y="0" class="label">26B A4B</text>
+    <rect class="bar grow" x="120" y="-20" width="100" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="50" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="31" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="240" y="-2" class="mono">BF16 ~50 GB</text>
+    <text x="240" y="26" class="mono">SFP8 ~25 GB</text>
+    <text x="240" y="54" class="mono">Q4 ~15.6 GB</text>
+  </g>
+
+  <g transform="translate(70 420)">
+    <text x="0" y="0" class="label">31B</text>
+    <rect class="bar grow" x="120" y="-20" width="120" height="24" rx="4" fill="#e2f1ff"/>
+    <rect class="bar grow" x="120" y="8" width="60" height="24" rx="4" fill="#f8e7c9"/>
+    <rect class="bar grow" x="120" y="36" width="35" height="24" rx="4" fill="#e8f5dd"/>
+    <text x="260" y="-2" class="mono">BF16 ~60 GB</text>
+    <text x="260" y="26" class="mono">SFP8 ~30 GB</text>
+    <text x="260" y="54" class="mono">Q4 ~17.4 GB</text>
+  </g>
+
+  <g transform="translate(620 150)">
+    <rect width="440" height="300" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">The quick decision table</text>
+    <text x="22" y="70" class="mono">phone / Pi-class: Q4 E2B</text>
+    <text x="22" y="96" class="mono">laptop CPU-only: Q4 E4B</text>
+    <text x="22" y="122" class="mono">16 GB GPU: Q4 26B A4B (long-context)</text>
+    <text x="22" y="148" class="mono">24 GB GPU: Q4 31B (max dense quality)</text>
+    <text x="22" y="180" class="label">Why these feel different</text>
+    <text x="22" y="208" class="tiny">Quantization shrinks weights, not KV cache.</text>
+    <text x="22" y="228" class="tiny">Long contexts still need GiBs of KV on top.</text>
+    <text x="22" y="256" class="tiny">MoE stores more weights than it activates,</text>
+    <text x="22" y="276" class="tiny">so compute per token stays small at Q4.</text>
+  </g>
+</svg>

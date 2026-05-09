@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 620" role="img" aria-label="A Gemma 4 decoder block with norms, attention, MLP or MoE, and residual connections.">
+  <defs><marker id="arrow6" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="572" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">A Gemma 4 decoder block, drawn as a machine</text>
+  <text x="58" y="106" class="note">The residual stream is the notebook margin. Each sub-block writes a correction, not a whole new sentence.</text>
+
+  <path class="flow" d="M90 320 H1015" marker-end="url(#arrow6)"/>
+  <text x="90" y="292" class="tiny">residual stream</text>
+
+  <g transform="translate(140 170)">
+    <rect width="150" height="78" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="33" class="label">RMSNorm</text>
+    <text x="20" y="58" class="tiny">steady scale</text>
+  </g>
+  <path class="flow" d="M215 320 C215 282 215 270 215 248" marker-end="url(#arrow6)"/>
+  <path class="flow" d="M290 210 C340 210 360 210 405 210" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(410 150)">
+    <rect width="220" height="122" rx="18" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="34" class="label">Q/K/V attention</text>
+    <text x="26" y="61" class="tiny">Q/K/V normalization</text>
+    <text x="26" y="84" class="tiny">local or global reader</text>
+    <text x="26" y="107" class="tiny">RoPE before matching</text>
+  </g>
+  <path class="flow" d="M630 210 C690 210 710 250 725 320" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(445 390)">
+    <rect width="150" height="78" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="33" class="label">RMSNorm</text>
+    <text x="20" y="58" class="tiny">again</text>
+  </g>
+  <path class="flow" d="M520 320 C520 350 520 365 520 390" marker-end="url(#arrow6)"/>
+  <path class="flow" d="M595 430 C650 430 665 430 710 430" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(715 378)">
+    <rect width="230" height="104" rx="18" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="26" y="34" class="label">MLP / MoE</text>
+    <text x="26" y="62" class="tiny">dense in E2B/E4B/31B</text>
+    <text x="26" y="84" class="tiny">router + experts in 26B A4B</text>
+  </g>
+  <path class="flow" d="M945 430 C985 420 996 365 1005 320" marker-end="url(#arrow6)"/>
+
+  <g transform="translate(138 505)">
+    <rect width="805" height="50" rx="14" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="32" class="mono">Output of block = old residual + attention correction + feed-forward correction.</text>
+  </g>
+</svg>

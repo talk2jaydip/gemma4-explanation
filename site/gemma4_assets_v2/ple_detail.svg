@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Per-Layer Embeddings (PLE) for E2B/E4B: token-identity plus context-aware projection, scaled and fed into each decoder layer.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .traveller{animation:drift 5s linear infinite;transform-origin:center}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes drift{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0}}
+  </style>
+  <defs><marker id="pa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="68" class="scribble title">PLE: per-layer notes for the small Gemma 4 models</text>
+  <text x="58" y="98" class="tiny">Two signals per layer: a lookup by token id + a context-aware projection. Summed, scaled by 1/sqrt(2), handed to each decoder layer.</text>
+
+  <g transform="translate(55 150)">
+    <rect width="170" height="90" rx="14" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">token ids</text>
+    <text x="20" y="60" class="tiny">integer sequence</text>
+    <text x="20" y="80" class="tiny">from tokenizer</text>
+  </g>
+
+  <path class="flow" d="M225 195 C265 195 275 165 310 165" marker-end="url(#pa)"/>
+  <path class="flow" d="M225 195 C265 195 275 230 310 230" marker-end="url(#pa)"/>
+
+  <g transform="translate(315 120)">
+    <rect width="230" height="90" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="18" y="34" class="label">token-identity PLE</text>
+    <text x="18" y="60" class="tiny">lookup table keyed by id</text>
+    <text x="18" y="80" class="tiny">one row per layer</text>
+  </g>
+
+  <g transform="translate(315 210)">
+    <rect width="230" height="90" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="18" y="34" class="label">context-aware PLE</text>
+    <text x="18" y="60" class="tiny">projection of input embedding</text>
+    <text x="18" y="80" class="tiny">used for image/audio positions too</text>
+  </g>
+
+  <path class="flow" d="M545 165 C600 165 615 195 650 195" marker-end="url(#pa)"/>
+  <path class="flow" d="M545 255 C600 255 615 225 650 225" marker-end="url(#pa)"/>
+
+  <g transform="translate(655 170)">
+    <rect width="170" height="90" rx="16" fill="#fff7c9" stroke="#151515" stroke-width="2.6"/>
+    <text x="32" y="36" class="label">sum + 1/sqrt(2)</text>
+    <text x="36" y="66" class="mono">(A + B) * 0.707</text>
+  </g>
+
+  <path class="flow" d="M825 215 C860 215 870 215 900 215" marker-end="url(#pa)"/>
+
+  <g transform="translate(905 150)">
+    <rect width="160" height="130" rx="16" fill="#fbf0f9" stroke="#151515" stroke-width="2.6"/>
+    <text x="18" y="34" class="label">layer L input</text>
+    <text x="18" y="60" class="tiny">residual + PLE_L</text>
+    <text x="18" y="82" class="tiny">separate signal per</text>
+    <text x="18" y="100" class="tiny">layer 1..35 / 1..42</text>
+  </g>
+
+  <g transform="translate(60 340)">
+    <rect width="1000" height="105" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">The trick in plain English</text>
+    <text x="22" y="68" class="mono">Instead of only telling layer 30 what layer 29 just produced,</text>
+    <text x="22" y="92" class="mono">the model also slips layer 30 a compact reminder of the original token identity.</text>
+  </g>
+
+  <g transform="translate(60 465)">
+    <rect width="1000" height="55" rx="14" fill="#fff" stroke="#151515" stroke-width="2"/>
+    <text x="22" y="34" class="mono">E2B: 35 layers * PLE row width -> stored once, re-used every forward pass. Cheap storage trades for richer per-layer signal.</text>
+  </g>
+
+  <circle class="traveller" r="6" fill="#151515">
+    <animateMotion dur="4.5s" repeatCount="indefinite" path="M225 195 L315 165 L545 165 L650 195 L825 215 L900 215"/>
+  </circle>
+  <circle class="traveller" r="6" fill="#aee4c1">
+    <animateMotion dur="5.2s" begin="1s" repeatCount="indefinite" path="M225 195 L315 255 L545 255 L650 225 L825 215 L900 215"/>
+  </circle>
+</svg>

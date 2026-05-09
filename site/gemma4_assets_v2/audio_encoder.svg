@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Audio encoder path on E2B and E4B: waveform to mel frames to audio tokens merged into the decoder sequence.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 15px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .wv{stroke:#151515;stroke-width:2;fill:none}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes wobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    .t1{animation:wobble 2s ease-in-out infinite}
+    .t2{animation:wobble 2.4s ease-in-out infinite}
+    .t3{animation:wobble 2.8s ease-in-out infinite}
+  </style>
+  <defs><marker id="aa" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Audio path (E2B / E4B): waveform to tokens the decoder can read</text>
+  <text x="58" y="100" class="tiny">The 26B A4B and 31B models do not take audio. On E2B/E4B, the audio encoder's outputs join the same sequence as text and image tokens.</text>
+
+  <g transform="translate(55 160)">
+    <rect width="180" height="110" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">raw audio</text>
+    <path class="wv" d="M20 80 Q34 50 48 80 T76 80 T104 80 T132 80 T160 80"/>
+    <text x="22" y="105" class="tiny">16 kHz waveform</text>
+  </g>
+
+  <path class="flow" d="M235 215 C265 215 275 215 300 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(305 160)">
+    <rect width="180" height="110" rx="14" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">mel frames</text>
+    <g fill="#f8e7c9" stroke="#151515" stroke-width="1.2">
+      <rect x="18" y="50" width="20" height="46" rx="3"/>
+      <rect x="42" y="58" width="20" height="38" rx="3"/>
+      <rect x="66" y="44" width="20" height="52" rx="3"/>
+      <rect x="90" y="64" width="20" height="32" rx="3"/>
+      <rect x="114" y="50" width="20" height="46" rx="3"/>
+      <rect x="138" y="56" width="20" height="40" rx="3"/>
+    </g>
+  </g>
+
+  <path class="flow" d="M485 215 C515 215 525 215 550 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(555 160)">
+    <rect width="200" height="110" rx="14" fill="#e8f5dd" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="32" class="label">audio encoder</text>
+    <text x="22" y="58" class="tiny">convolutional frontend</text>
+    <text x="22" y="80" class="tiny">+ transformer layers</text>
+    <text x="22" y="100" class="tiny">outputs audio-token embeddings</text>
+  </g>
+
+  <path class="flow" d="M755 215 C790 215 805 215 830 215" marker-end="url(#aa)"/>
+
+  <g transform="translate(835 170)">
+    <rect width="220" height="90" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="34" class="label">merged sequence</text>
+    <g transform="translate(22 50)">
+      <circle class="t1" cx="10" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <circle class="t2" cx="34" cy="10" r="8" fill="#e2f1ff" stroke="#151515" stroke-width="2"/>
+      <circle class="t3" cx="58" cy="10" r="8" fill="#e8f5dd" stroke="#151515" stroke-width="2"/>
+      <circle class="t1" cx="82" cy="10" r="8" fill="#e8f5dd" stroke="#151515" stroke-width="2"/>
+      <circle class="t2" cx="106" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+      <circle class="t3" cx="130" cy="10" r="8" fill="#e2f1ff" stroke="#151515" stroke-width="2"/>
+      <circle class="t1" cx="154" cy="10" r="8" fill="#f8e7c9" stroke="#151515" stroke-width="2"/>
+    </g>
+    <text x="22" y="80" class="tiny">text + image + audio mixed</text>
+  </g>
+
+  <g transform="translate(60 320)">
+    <rect width="1000" height="150" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="40" class="label">Why audio on the edge models only</text>
+    <text x="22" y="68" class="mono">E2B and E4B are designed for device-local voice assistants, live transcription, and dictation.</text>
+    <text x="22" y="92" class="mono">Adding an audio head to 26B A4B / 31B would mostly duplicate cloud STT capability.</text>
+    <text x="22" y="120" class="mono">Audio tokens share the same residual stream as text - no separate model.</text>
+  </g>
+</svg>

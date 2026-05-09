@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="KV cache memory calculation comparing naive full cache and Gemma 4 hybrid cache estimate.">
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="74" class="scribble title">KV cache math: why hybrid attention matters</text>
+  <text x="58" y="106" class="note">Approximation for 31B public config, BF16 KV, batch size 1. Real runtimes add their own allocator and paging details.</text>
+
+  <g transform="translate(90 170)">
+    <text x="0" y="-22" class="label">If all 60 layers stored full 256K context with local KV size</text>
+    <rect x="0" y="0" width="860" height="76" rx="15" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <rect class="bar grow-wide" x="0" y="0" width="860" height="76" rx="15" fill="#f5b6a5" fill-opacity="0.55"/>
+    <text x="28" y="48" class="mono">about 240 GiB</text>
+  </g>
+
+  <g transform="translate(90 310)">
+    <text x="0" y="-22" class="label">Hybrid idea: local layers keep a window; global layers keep long-range cache</text>
+    <rect x="0" y="0" width="860" height="76" rx="15" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <rect class="bar grow-short" x="0" y="0" width="75" height="76" rx="15" fill="#aee4c1" fill-opacity="0.7"/>
+    <text x="28" y="48" class="mono">about 20.8 GiB</text>
+  </g>
+
+  <g transform="translate(92 430)">
+    <rect width="860" height="58" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="36" class="mono">Full attention scores: 262144^2=68.7B; local window scores: 262144*1024=268M; reduction=256x.</text>
+  </g>
+</svg>

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-label="Grouped-Query Attention in Gemma 4: many query heads share fewer key-value heads.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 20px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 16px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    .qhead{fill:#e2f1ff;stroke:#151515;stroke-width:2.2}
+    .kvhead{fill:#f8e7c9;stroke:#151515;stroke-width:2.5}
+    .qhead.active{animation:pulseQ 2.4s ease-in-out infinite}
+    .kvhead.active{animation:pulseKV 2.4s ease-in-out infinite}
+    @keyframes dash{to{stroke-dashoffset:-120}}
+    @keyframes pulseQ{0%,100%{fill:#e2f1ff}50%{fill:#bfd8ee}}
+    @keyframes pulseKV{0%,100%{fill:#f8e7c9}50%{fill:#eac790}}
+  </style>
+  <defs><marker id="ga" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="512" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="70" class="scribble title">Grouped-Query Attention: many askers, fewer answerers</text>
+  <text x="58" y="102" class="note tiny">In local layers: 32 Q heads share 16 KV heads -> each KV head answers 2 Qs. In global layers of the 31B: 32 Q heads share 4 KV heads -> each answers 8.</text>
+
+  <g transform="translate(60 145)">
+    <text x="0" y="0" class="label">Query heads (32)</text>
+    <g id="qRow">
+      <rect class="qhead active" x="0" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead active" x="32" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="64" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="96" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="128" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="160" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="192" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="224" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="256" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="288" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="320" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="352" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="384" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="416" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="448" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="480" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="512" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="544" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="576" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="608" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="640" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="672" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="704" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="736" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="768" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="800" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="832" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="864" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="896" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="928" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="960" y="20" width="28" height="34" rx="6"/>
+      <rect class="qhead" x="992" y="20" width="28" height="34" rx="6"/>
+    </g>
+  </g>
+
+  <g id="bundles" stroke="#151515" stroke-width="1.8" opacity="0.7" fill="none">
+    <path class="flow" d="M76 210 C76 240 85 270 108 295"/>
+    <path class="flow" d="M140 210 C140 240 135 270 132 295"/>
+    <path class="flow" d="M204 210 C204 240 220 265 240 295"/>
+    <path class="flow" d="M268 210 C268 240 260 260 260 295"/>
+    <path class="flow" d="M332 210 C332 240 350 265 372 295"/>
+    <path class="flow" d="M396 210 C396 240 390 260 390 295"/>
+    <path class="flow" d="M460 210 C460 240 480 265 504 295"/>
+    <path class="flow" d="M524 210 C524 240 520 260 522 295"/>
+    <path class="flow" d="M588 210 C588 240 610 265 636 295"/>
+    <path class="flow" d="M652 210 C652 240 650 260 652 295"/>
+    <path class="flow" d="M716 210 C716 240 740 265 768 295"/>
+    <path class="flow" d="M780 210 C780 240 780 260 784 295"/>
+    <path class="flow" d="M844 210 C844 240 875 265 900 295"/>
+    <path class="flow" d="M908 210 C908 240 910 260 914 295"/>
+    <path class="flow" d="M972 210 C972 240 1005 265 1030 295"/>
+    <path class="flow" d="M1006 210 C1006 240 1020 260 1044 295"/>
+  </g>
+
+  <g transform="translate(60 310)">
+    <text x="0" y="0" class="label">Key/Value heads (16 in local layers)</text>
+    <g>
+      <rect class="kvhead active" x="48" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="112" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="176" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="240" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="304" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="368" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="432" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="496" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="560" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="624" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="688" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="752" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="816" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="880" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="944" y="20" width="56" height="54" rx="8"/>
+      <rect class="kvhead" x="1008" y="20" width="56" height="54" rx="8"/>
+    </g>
+  </g>
+
+  <g transform="translate(60 435)">
+    <rect width="1000" height="80" rx="16" fill="#fff" stroke="#151515" stroke-width="2.2"/>
+    <text x="24" y="34" class="mono">Why GQA: each KV head serves a whole group of Qs, shrinking the KV cache proportionally.</text>
+    <text x="24" y="60" class="mono">Cache saving vs full multi-head: local layers store 16/32 = 50%; global layers in 31B store 4/32 = 12.5%.</text>
+  </g>
+</svg>

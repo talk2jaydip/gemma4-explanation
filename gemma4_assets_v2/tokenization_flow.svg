@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 520" role="img" aria-label="Tokenization flow into Gemma 4: text becomes ids from a 262K vocabulary, then dense embeddings, then decoder input.">
+  <style>
+    .scribble{font-family:"Comic Sans MS","Bradley Hand",ui-rounded,cursive}
+    .title{font-size:30px;font-weight:900;letter-spacing:-.03em}
+    .label{font:700 19px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .tiny{font:500 15px ui-rounded,"Avenir Next",system-ui,sans-serif}
+    .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .flow{fill:none;stroke:#151515;stroke-width:3;stroke-linecap:round;stroke-dasharray:9 7;animation:dash 3s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-140}}
+    @keyframes fadein{0%{opacity:0}100%{opacity:1}}
+    .tok{animation:fadein .8s ease-out both}
+  </style>
+  <defs><marker id="ta" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#151515"/></marker></defs>
+  <rect x="24" y="24" width="1072" height="472" rx="26" fill="#fffaf0" stroke="#151515" stroke-width="3"/>
+  <text x="58" y="66" class="scribble title">From string to vector: the 262K-vocab door</text>
+  <text x="58" y="96" class="tiny">A large vocabulary lets Gemma 4 cover many scripts and code fragments without splitting them into tiny byte pieces.</text>
+
+  <g transform="translate(55 160)">
+    <rect width="240" height="100" rx="14" fill="#e2f1ff" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">raw text</text>
+    <text x="20" y="62" class="mono" style="fill:#151515">"Bonjour, monde!"</text>
+    <text x="20" y="86" class="tiny">any UTF-8 string</text>
+  </g>
+
+  <path class="flow" d="M295 215 C325 215 340 215 370 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(375 160)">
+    <rect width="240" height="100" rx="14" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">tokenizer</text>
+    <text x="20" y="60" class="mono">SentencePiece</text>
+    <text x="20" y="80" class="tiny">262,144 entries</text>
+  </g>
+
+  <path class="flow" d="M615 215 C645 215 660 215 690 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(695 160)">
+    <rect width="240" height="100" rx="14" fill="#f8e7c9" stroke="#151515" stroke-width="2.5"/>
+    <text x="20" y="34" class="label">token ids</text>
+    <text x="20" y="60" class="mono" style="fill:#151515">[57421, 19, 8823, 5]</text>
+    <text x="20" y="82" class="tiny">integer indices</text>
+  </g>
+
+  <path class="flow" d="M935 215 C970 215 985 215 1015 215" marker-end="url(#ta)"/>
+
+  <g transform="translate(1020 175)">
+    <rect width="60" height="70" rx="14" fill="#fbf0f9" stroke="#151515" stroke-width="2.5"/>
+    <text x="11" y="40" class="label">emb</text>
+  </g>
+
+  <g transform="translate(60 290)">
+    <rect width="1000" height="185" rx="16" fill="#fff" stroke="#151515" stroke-width="2.5"/>
+    <text x="22" y="38" class="label">Why 262K vocab</text>
+    <text x="22" y="68" class="mono">- covers major world scripts + code symbols without falling back to byte-level</text>
+    <text x="22" y="92" class="mono">- fewer tokens per string -> longer effective context for the same 256K budget</text>
+    <text x="22" y="116" class="mono">- includes special control tokens (turn, system, tool)</text>
+    <text x="22" y="146" class="label">Embedding cost</text>
+    <text x="22" y="172" class="mono">262144 vocab * hidden_dim bytes sits in the weight file, not in the KV cache.</text>
+  </g>
+</svg>
